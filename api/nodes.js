@@ -54,11 +54,18 @@ const NAME_TO_ID = {
   "Mobile Native App (iOS/Android)": "mobile-app",
   "Global KOL Network (10K+)": "global-kol",
   "Protocol Decentralization": "decentralization",
+  "Investor Deck & Pitch": "investor-deck",
+  "Fundraise (Seed Round)": "fundraise",
+  "First Flash Sell (3 LE Packs)": "flash-sell",
+  "Perpetual Gacha": "perpetual-gacha",
   // Alternate names for fuzzy matching
   "Multi-Category Expansion": "multi-category",
   "APAC Marketing Hub": "apac-hub",
   "Cross-Platform Trading Bridge": "cross-platform",
   "Community-Generated Packs": "community-ugm",
+  "First Flash Sell": "flash-sell",
+  "Fundraise": "fundraise",
+  "Investor Deck": "investor-deck",
 };
 
 // Dependency map (node ID -> array of dependency IDs)
@@ -112,6 +119,10 @@ const DEPENDENCY_MAP = {
   "mobile-app": ["pwa", "advanced-gacha"],
   "global-kol": ["apac-hub", "content-engine"],
   "decentralization": ["dao-treasury", "permissionless-custody"],
+  "investor-deck": ["brand-identity", "landing-page"],
+  "fundraise": ["investor-deck"],
+  "flash-sell": ["edition-campaign", "gacha-mvp", "landing-page"],
+  "perpetual-gacha": ["flash-sell", "gacha-mvp"],
 };
 
 // Unlock map (reverse of dependencies)
