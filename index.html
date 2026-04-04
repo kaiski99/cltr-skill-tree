@@ -225,32 +225,83 @@
   .hex-plabel { font-family: 'Orbitron', sans-serif; font-size: 6px; color: var(--text-dim); margin-top: 1px; font-weight: 500; }
 
   /* Detail panel */
-  .detail-overlay { position: fixed; inset: 0; z-index: 190; background: rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
+  /* Modal overlay */
+  .detail-overlay { position: fixed; inset: 0; z-index: 190; background: rgba(0,0,0,0.7); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); }
   .detail-overlay.open { opacity: 1; pointer-events: auto; }
+
+  /* Centered modal */
   .detail-panel {
-    position: fixed; right: -420px; top: 0; bottom: 0; width: 380px;
-    background: var(--bg2); border-left: 1px solid var(--border);
-    z-index: 200; transition: right 0.3s ease; overflow-y: auto; padding: 20px;
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: 580px; max-width: 92vw; max-height: 85vh;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px;
+    z-index: 200; overflow-y: auto; padding: 28px 32px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,212,255,0.04);
   }
-  .detail-panel.open { right: 0; }
+  .detail-panel.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
   .detail-close {
-    position: absolute; top: 12px; right: 12px;
-    width: 24px; height: 24px; border-radius: 3px;
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 4px;
     border: 1px solid var(--border); background: var(--bg);
     color: var(--text-dim); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; transition: all 0.2s;
+    font-size: 13px; transition: all 0.2s;
   }
   .detail-close:hover { border-color: var(--cyan); color: #fff; }
+
+  /* Modal header */
   .detail-branch { display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 8px; font-weight: 600; padding: 2px 7px; border-radius: 2px; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-  .detail-title { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; line-height: 1.3; }
-  .detail-phase { font-size: 10px; color: var(--text-dim); margin-bottom: 14px; }
-  .detail-progress-section { margin-bottom: 16px; }
-  .detail-progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .detail-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; line-height: 1.3; }
+  .detail-phase { font-size: 10px; color: var(--text-dim); margin-bottom: 16px; }
+
+  /* Two-column layout inside modal */
+  .detail-columns { display: flex; gap: 24px; }
+  .detail-col-left { flex: 1; min-width: 0; }
+  .detail-col-right { flex: 1; min-width: 0; }
+
+  /* Progress section */
+  .detail-progress-section { margin-bottom: 18px; }
+  .detail-progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .detail-progress-label { font-family: 'Orbitron', sans-serif; font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600; }
-  .detail-progress-value { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; }
-  .detail-pbar { width: 100%; height: 6px; background: #0e0e18; border-radius: 3px; overflow: hidden; border: 1px solid #1a1a28; }
-  .detail-pfill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+  .detail-progress-value { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; }
+  .detail-pbar { width: 100%; height: 8px; background: #0e0e18; border-radius: 4px; overflow: hidden; border: 1px solid #1a1a28; }
+  .detail-pfill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+
+  /* Progress checklist */
+  .progress-checklist { margin-top: 10px; }
+  .checklist-group-title { font-family: 'Orbitron', sans-serif; font-size: 7px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 5px; margin-top: 10px; font-weight: 600; }
+  .checklist-group-title:first-child { margin-top: 0; }
+  .checklist-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px; margin-bottom: 3px;
+    border-radius: 3px; font-size: 11px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+    transition: background 0.2s;
+  }
+  .checklist-item:hover { background: rgba(255,255,255,0.04); }
+  .checklist-item.done { opacity: 0.7; }
+  .checklist-item.done .checklist-text { text-decoration: line-through; color: var(--text-dim); }
+  .checklist-icon {
+    width: 16px; height: 16px; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; flex-shrink: 0;
+  }
+  .checklist-icon.done { background: rgba(0,255,136,0.12); color: var(--green); }
+  .checklist-icon.pending { background: rgba(255,255,255,0.04); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.08); }
+  .checklist-icon.active { background: rgba(0,212,255,0.12); color: var(--cyan); }
+  .checklist-text { color: var(--text); flex: 1; }
+  .checklist-status { font-size: 8px; font-weight: 600; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 2px; }
+  .checklist-status.done { background: rgba(0,255,136,0.1); color: var(--green); }
+  .checklist-status.active { background: rgba(0,212,255,0.1); color: var(--cyan); }
+  .checklist-status.pending { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+  .checklist-clickable { cursor: pointer; }
+  .checklist-clickable:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.15); }
+
+  /* Info rows */
   .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(26,26,46,0.4); }
   .detail-row-label { font-size: 10px; color: var(--text-dim); }
   .detail-row-value { font-size: 10px; color: #fff; font-weight: 600; }
@@ -271,6 +322,11 @@
   .detail-unlock-item:hover { background: rgba(0,255,136,0.12); }
   .blocker-badge { font-size: 10px; padding: 5px 8px; background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.15); border-radius: 3px; color: var(--red); line-height: 1.4; }
 
+  @media (max-width: 700px) {
+    .detail-columns { flex-direction: column; gap: 12px; }
+    .detail-panel { padding: 20px 16px; }
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -279,7 +335,7 @@
   @media (max-width: 900px) {
     .quest-panel { display: none; }
     .top-stats { display: none; }
-    .detail-panel { width: 100%; right: -100%; }
+    .detail-panel { width: 95vw; max-height: 90vh; }
   }
 </style>
 </head>
@@ -587,28 +643,119 @@ async function fetchNodes() {
   }
 }
 
+function buildProgressChecklist(node) {
+  // Build detailed progress items from deps + milestones
+  const items = [];
+
+  // 1) Dependency items
+  if (node.depends && node.depends.length > 0) {
+    node.depends.forEach(depId => {
+      const dep = nodeMap[depId];
+      if (!dep) return;
+      const isDone = dep.status === 'Done' || dep.status === 'Shipped';
+      const isActive = dep.status === 'In Progress';
+      items.push({
+        text: dep.name,
+        status: isDone ? 'done' : isActive ? 'active' : 'pending',
+        group: 'dependencies',
+        clickId: depId
+      });
+    });
+  }
+
+  // 2) Task milestone items (derived from status)
+  const milestones = [
+    { text: 'Task initiated', done: node.status !== 'Locked' && node.status !== 'Not Started' },
+    { text: 'Development in progress', done: node.status === 'In Progress' || node.status === 'Done' || node.status === 'Shipped' },
+    { text: 'Review & testing', done: node.status === 'Done' || node.status === 'Shipped' },
+    { text: 'Completed & deployed', done: node.status === 'Done' || node.status === 'Shipped' },
+    { text: 'Shipped to production', done: node.status === 'Shipped' },
+  ];
+  milestones.forEach(m => {
+    items.push({
+      text: m.text,
+      status: m.done ? 'done' : (node.status === 'In Progress' && m.text === 'Development in progress') ? 'active' : 'pending',
+      group: 'milestones'
+    });
+  });
+
+  return items;
+}
+
+function getDetailedProgress(node) {
+  const items = buildProgressChecklist(node);
+  const doneCount = items.filter(i => i.status === 'done').length;
+  const activeCount = items.filter(i => i.status === 'active').length;
+  const total = items.length;
+  const pct = total > 0 ? Math.round(((doneCount + activeCount * 0.5) / total) * 100) : 0;
+  return { items, doneCount, activeCount, pendingCount: total - doneCount - activeCount, total, pct };
+}
+
 function openDetail(node) {
   if (!node) return; selectedNode=node;
   const panel=document.getElementById('detailPanel'), overlay=document.getElementById('detailOverlay'), content=document.getElementById('detailContent');
-  const c=branchColors[node.branch]||'#888', prog=getProgress(node), pct=getProgressPct(node);
+  const c=branchColors[node.branch]||'#888';
+  const dp = getDetailedProgress(node);
   const pc = (node.status==='Done'||node.status==='Shipped')?'var(--green)':node.status==='In Progress'?'var(--cyan)':'var(--text-dim)';
-  const dH = (node.depends||[]).length>0 ? node.depends.map(d=>{const dep=nodeMap[d];return dep?`<div class="detail-dep-item" onclick="event.stopPropagation();openDetail(nodeMap['${d}'])">${statusIcons[dep.status]||''} ${dep.name}</div>`:''}).join('') : '<span style="color:var(--text-dim);font-size:10px">Root node</span>';
+
   const uH = (node.unlocks||[]).length>0 ? node.unlocks.map(u=>{const un=nodeMap[u];return un?`<div class="detail-unlock-item" onclick="event.stopPropagation();openDetail(nodeMap['${u}'])">${un.name}</div>`:''}).join('') : '<span style="color:var(--text-dim);font-size:10px">End node</span>';
   const bH = node.blockers?`<div class="detail-section"><div class="detail-section-title">Blockers</div><div class="blocker-badge">${node.blockers}</div></div>`:'';
+
+  // Build checklist HTML grouped
+  const depItems = dp.items.filter(i => i.group === 'dependencies');
+  const msItems = dp.items.filter(i => i.group === 'milestones');
+
+  let checklistHtml = '';
+  if (depItems.length > 0) {
+    checklistHtml += `<div class="checklist-group-title">Dependencies (${depItems.filter(i=>i.status==='done').length}/${depItems.length})</div>`;
+    checklistHtml += depItems.map(i => `
+      <div class="checklist-item ${i.status==='done'?'done':''} ${i.clickId?'checklist-clickable':''}" ${i.clickId?`onclick="event.stopPropagation();openDetail(nodeMap['${i.clickId}'])"`:''}>
+        <div class="checklist-icon ${i.status}">${i.status==='done'?'\u2713':i.status==='active'?'\u25B6':'\u25CB'}</div>
+        <span class="checklist-text">${i.text}</span>
+        <span class="checklist-status ${i.status}">${i.status==='done'?'Done':i.status==='active'?'Active':'Pending'}</span>
+      </div>`).join('');
+  }
+
+  checklistHtml += `<div class="checklist-group-title">Milestones (${msItems.filter(i=>i.status==='done').length}/${msItems.length})</div>`;
+  checklistHtml += msItems.map(i => `
+    <div class="checklist-item ${i.status==='done'?'done':''}">
+      <div class="checklist-icon ${i.status}">${i.status==='done'?'\u2713':i.status==='active'?'\u25B6':'\u25CB'}</div>
+      <span class="checklist-text">${i.text}</span>
+      <span class="checklist-status ${i.status}">${i.status==='done'?'Done':i.status==='active'?'In Progress':'Pending'}</span>
+    </div>`).join('');
 
   content.innerHTML = `
     <div class="detail-branch" style="background:${c}15;color:${c};border:1px solid ${c}30">${node.branch}</div>
     <div class="detail-title">${node.name}</div>
-    <div class="detail-phase">Phase ${node.phase} &middot; ${(node.team||[]).join(', ')||'Unassigned'}</div>
-    <div class="detail-progress-section"><div class="detail-progress-header"><span class="detail-progress-label">Progress</span><span class="detail-progress-value" style="color:${pc}">${prog.cur}/${prog.max}</span></div><div class="detail-pbar"><div class="detail-pfill" style="width:${pct}%;background:${pc}"></div></div></div>
-    <div class="detail-row"><span class="detail-row-label">Status</span><span class="detail-row-value">${statusIcons[node.status]||''} ${node.status}</span></div>
-    <div class="detail-row"><span class="detail-row-label">Priority</span><span class="detail-row-value">${node.priority}</span></div>
-    <div class="detail-row"><span class="detail-row-label">Est. Cost</span><span class="detail-row-value">${node.cost>0?'$'+node.cost.toLocaleString():'N/A'}</span></div>
-    <div class="detail-row"><span class="detail-row-label">Duration</span><span class="detail-row-value">${node.duration||'\u2014'}</span></div>
-    ${bH}
-    <div class="detail-section" style="margin-top:14px"><div class="detail-section-title">Notes</div><div class="detail-section-content">${node.notes||'\u2014'}</div></div>
-    <div class="detail-section"><div class="detail-section-title">Depends On</div>${dH}</div>
-    <div class="detail-section"><div class="detail-section-title">Unlocks</div>${uH}</div>`;
+    <div class="detail-phase">Phase ${node.phase} &middot; ${(node.team||[]).join(', ')||'Unassigned'} &middot; ${statusIcons[node.status]||''} ${node.status}</div>
+
+    <div class="detail-progress-section">
+      <div class="detail-progress-header">
+        <span class="detail-progress-label">Overall Progress</span>
+        <span class="detail-progress-value" style="color:${pc}">${dp.pct}%</span>
+      </div>
+      <div class="detail-pbar"><div class="detail-pfill" style="width:${dp.pct}%;background:${pc}"></div></div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <span style="font-size:9px;color:var(--green)">\u2713 ${dp.doneCount} done</span>
+        <span style="font-size:9px;color:var(--cyan)">\u25B6 ${dp.activeCount} active</span>
+        <span style="font-size:9px;color:var(--text-dim)">\u25CB ${dp.pendingCount} pending</span>
+      </div>
+    </div>
+
+    <div class="detail-columns">
+      <div class="detail-col-left">
+        <div class="detail-section-title">Progress Details</div>
+        <div class="progress-checklist">${checklistHtml}</div>
+      </div>
+      <div class="detail-col-right">
+        <div class="detail-row"><span class="detail-row-label">Priority</span><span class="detail-row-value">${node.priority}</span></div>
+        <div class="detail-row"><span class="detail-row-label">Est. Cost</span><span class="detail-row-value">${node.cost>0?'$'+node.cost.toLocaleString():'N/A'}</span></div>
+        <div class="detail-row"><span class="detail-row-label">Duration</span><span class="detail-row-value">${node.duration||'\u2014'}</span></div>
+        ${bH}
+        <div class="detail-section" style="margin-top:12px"><div class="detail-section-title">Notes</div><div class="detail-section-content">${node.notes||'\u2014'}</div></div>
+        <div class="detail-section"><div class="detail-section-title">Unlocks (${(node.unlocks||[]).length})</div>${uH}</div>
+      </div>
+    </div>`;
   panel.classList.add('open'); overlay.classList.add('open');
 }
 
