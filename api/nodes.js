@@ -1,7 +1,7 @@
 const { Client } = require("@notionhq/client");
 
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const DATABASE_ID = process.env.NOTION_DATABASE_ID;
+const notion = new Client({ auth: (process.env.NOTION_TOKEN || '').trim() });
+const DATABASE_ID = (process.env.NOTION_DATABASE_ID || '').trim();
 
 // Maps node names to stable IDs for dependency resolution
 const NAME_TO_ID = {
