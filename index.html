@@ -5,769 +5,624 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CLTR Protocol — Skill Tree</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
 
-  :root {
-    --bg: #06060c;
-    --bg2: #0c0c16;
-    --bg3: #12121e;
-    --border: #1a1a2e;
-    --text: #c0c0d0;
-    --text-dim: #4a4a66;
-    --text-bright: #e8e8f4;
-    --gold: #c9a84c;
-    --gold-glow: rgba(201,168,76,0.35);
-    --cyan: #00d4ff;
-    --cyan-glow: rgba(0,212,255,0.3);
-    --purple: #8b5cf6;
-    --purple-glow: rgba(139,92,246,0.3);
-    --green: #00ff88;
-    --green-glow: rgba(0,255,136,0.25);
-    --red: #ff3366;
-    --red-glow: rgba(255,51,102,0.3);
-    --orange: #ff8800;
-    --pink: #ec4899;
-    --hex-size: 44px;
-  }
+:root{
+  --bg:#0a0b10;--bg2:#10111a;--bg3:#161722;
+  --border:#1e2030;--border2:#2a2c42;
+  --text:#b8b8c8;--text-dim:#505068;--text-bright:#e0e0f0;
+  --cyan:#00ccff;--cyan-g:rgba(0,204,255,.35);
+  --green:#22dd66;--green-g:rgba(34,221,102,.3);
+  --gold:#d4a832;--gold-g:rgba(212,168,50,.35);
+  --red:#dd3344;--red-g:rgba(221,51,68,.3);
+  --orange:#ee8822;--orange-g:rgba(238,136,34,.3);
+  --purple:#9955ee;--purple-g:rgba(153,85,238,.3);
+  --pink:#dd44aa;--pink-g:rgba(221,68,170,.3);
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    overflow: hidden;
-  }
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;height:100vh}
 
-  /* Background */
-  .bg-grid {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse at 20% 30%, rgba(0,212,255,0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 70%, rgba(139,92,246,0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(12,12,22,0.8) 0%, var(--bg) 80%);
-  }
-  .bg-grid::after {
-    content: ''; position: absolute; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0H0v40' fill='none' stroke='%23ffffff' stroke-width='0.2' opacity='0.04'/%3E%3C/svg%3E");
-  }
+/* ═══ BG TEXTURE ═══ */
+.bg-tex{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(212,168,50,.04) 0%,transparent 50%),
+    radial-gradient(ellipse at 20% 40%,rgba(0,204,255,.02) 0%,transparent 40%),
+    radial-gradient(ellipse at 80% 40%,rgba(221,51,68,.02) 0%,transparent 40%),
+    var(--bg);
+}
+.bg-tex::after{content:'';position:absolute;inset:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
 
-  /* Loading */
-  .loading-overlay {
-    position: fixed; inset: 0; z-index: 9999; background: var(--bg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-    transition: opacity 0.5s;
-  }
-  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-  .loading-logo { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: var(--cyan); letter-spacing: 6px; text-shadow: 0 0 30px var(--cyan-glow); }
-  .loading-bar { width: 200px; height: 2px; background: #111; border-radius: 1px; overflow: hidden; }
-  .loading-bar-fill { height: 100%; width: 30%; background: var(--cyan); border-radius: 1px; animation: load-pulse 1s ease-in-out infinite; }
-  @keyframes load-pulse { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
-  .loading-text { font-size: 9px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
+/* ═══ LOADING ═══ */
+.ld{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .5s}
+.ld.hidden{opacity:0;pointer-events:none}
+.ld-logo{font-family:'Cinzel',serif;font-size:32px;font-weight:900;color:var(--gold);letter-spacing:8px;text-shadow:0 0 40px var(--gold-g),0 2px 8px rgba(0,0,0,.8)}
+.ld-bar{width:180px;height:2px;background:#1a1a2a;border-radius:1px;overflow:hidden}
+.ld-fill{height:100%;width:30%;background:var(--gold);border-radius:1px;animation:ldp 1s ease-in-out infinite}
+@keyframes ldp{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+.ld-txt{font-size:9px;color:var(--text-dim);letter-spacing:3px;text-transform:uppercase}
 
-  /* Top bar */
-  .top-bar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: linear-gradient(180deg, rgba(6,6,12,0.95) 0%, rgba(6,6,12,0.85) 100%);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .top-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: var(--cyan); letter-spacing: 4px; text-shadow: 0 0 16px var(--cyan-glow); }
-  .logo-sub { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
-  .sync-badge {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 8px; color: var(--text-dim); padding: 3px 8px;
-    border: 1px solid var(--border); border-radius: 3px;
-    background: rgba(6,6,12,0.8); cursor: pointer;
-    letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s;
-  }
-  .sync-badge:hover { border-color: var(--cyan); color: var(--text); }
-  .sync-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
-  .sync-dot.syncing { background: var(--cyan); animation: spin 0.6s linear infinite; }
-  .sync-dot.error { background: var(--red); }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ═══ TOP BAR ═══ */
+.top{position:fixed;top:0;left:0;right:0;z-index:100;
+  background:linear-gradient(180deg,rgba(10,11,16,.96),rgba(10,11,16,.88));
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
+  padding:8px 20px;display:flex;align-items:center;justify-content:space-between}
+.top-l{display:flex;align-items:center;gap:14px}
+.logo{font-family:'Cinzel',serif;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:4px;text-shadow:0 0 16px var(--gold-g)}
+.logo-s{font-family:'Cinzel',serif;font-size:8px;color:var(--text-dim);letter-spacing:3px}
+.sync{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--text-dim);padding:3px 8px;border:1px solid var(--border);border-radius:3px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .2s;background:rgba(10,11,16,.6)}
+.sync:hover{border-color:var(--gold);color:var(--text)}
+.sd{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.sd.syncing{background:var(--gold);animation:sp .6s linear infinite}
+.sd.error{background:var(--red)}
+@keyframes sp{to{transform:rotate(360deg)}}
+.top-r{display:flex;gap:18px;align-items:center}
+.st{text-align:center}
+.st-v{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--text-bright)}
+.st-l{font-size:7px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-top:1px}
+.pb{width:100px;height:4px;background:#111;border-radius:2px;overflow:hidden;border:1px solid #1a1a2a}
+.pf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),#e8c84a);transition:width .6s;box-shadow:0 0 8px var(--gold-g)}
 
-  .top-stats { display: flex; gap: 20px; align-items: center; }
-  .stat { text-align: center; }
-  .stat-value { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-bright); }
-  .stat-label { font-size: 7px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
-  .progress-wrap { text-align: center; }
-  .progress-bar { width: 100px; height: 4px; background: #111; border-radius: 2px; overflow: hidden; border: 1px solid #1a1a28; }
-  .progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--purple)); transition: width 0.6s; box-shadow: 0 0 8px var(--cyan-glow); }
+/* ═══ LAYOUT ═══ */
+.app{display:flex;height:calc(100vh - 42px);margin-top:42px;position:relative;z-index:1}
 
-  /* Layout */
-  .app-layout { display: flex; height: calc(100vh - 46px); margin-top: 46px; position: relative; z-index: 1; }
+/* ═══ QUEST PANEL ═══ */
+.qp{width:240px;min-width:240px;background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px solid var(--border);padding:14px 12px;overflow-y:auto}
+.qp-h{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;text-shadow:0 0 10px var(--gold-g)}
+.qp-s{font-size:9px;color:var(--text-dim);margin-bottom:12px}
+.qc{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:9px 10px;margin-bottom:7px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.qc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px}
+.qc.q0::before{background:var(--red)}.qc.q1::before{background:var(--gold)}.qc.q2::before{background:var(--cyan)}
+.qc:hover{border-color:var(--border2);transform:translateX(2px)}
+.qr{font-family:'Cinzel',serif;font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+.qc.q0 .qr{color:var(--red)}.qc.q1 .qr{color:var(--gold)}.qc.q2 .qr{color:var(--cyan)}
+.qn{font-size:10px;font-weight:700;color:var(--text-bright);margin-bottom:3px;line-height:1.3}
+.qre{font-size:8px;color:var(--text-dim);line-height:1.3;margin-bottom:5px}
+.qbw{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.qb{flex:1;height:3px;background:#111;border-radius:2px;overflow:hidden}
+.qbf{height:100%;border-radius:2px}
+.qbl{font-family:'Cinzel',serif;font-size:7px;color:var(--text-dim);font-weight:600}
+.qt{display:flex;gap:3px;flex-wrap:wrap}
+.qtg{font-size:7px;padding:1px 4px;border-radius:2px;font-weight:600;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);color:var(--text-dim)}
+.qdiv{height:1px;background:var(--border);margin:12px 0}
 
-  /* Quest sidebar */
-  .quest-panel {
-    width: 260px; min-width: 260px;
-    background: linear-gradient(180deg, rgba(12,12,22,0.95) 0%, rgba(6,6,12,0.98) 100%);
-    border-right: 1px solid var(--border);
-    padding: 16px 14px; overflow-y: auto;
-  }
-  .quest-header { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; text-shadow: 0 0 10px var(--cyan-glow); }
-  .quest-sub { font-size: 9px; color: var(--text-dim); margin-bottom: 14px; letter-spacing: 0.5px; }
-  .quest-card {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 4px; padding: 10px; margin-bottom: 8px;
-    cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-  }
-  .quest-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 2px; }
-  .quest-card.q0::before { background: var(--red); }
-  .quest-card.q1::before { background: var(--gold); }
-  .quest-card.q2::before { background: var(--cyan); }
-  .quest-card:hover { border-color: #2a2a44; transform: translateX(2px); }
-  .quest-rank { font-family: 'Orbitron', sans-serif; font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 3px; }
-  .quest-card.q0 .quest-rank { color: var(--red); }
-  .quest-card.q1 .quest-rank { color: var(--gold); }
-  .quest-card.q2 .quest-rank { color: var(--cyan); }
-  .quest-name { font-size: 11px; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; line-height: 1.3; }
-  .quest-reason { font-size: 9px; color: var(--text-dim); line-height: 1.35; margin-bottom: 6px; }
-  .quest-bar-wrap { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
-  .quest-bar { flex: 1; height: 3px; background: #111; border-radius: 2px; overflow: hidden; }
-  .quest-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-  .quest-bar-label { font-family: 'Orbitron', sans-serif; font-size: 7px; color: var(--text-dim); font-weight: 600; }
-  .quest-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-  .quest-tag { font-size: 7px; padding: 1px 5px; border-radius: 2px; font-weight: 600; letter-spacing: 0.3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
-  .quest-divider { height: 1px; background: var(--border); margin: 14px 0; }
+/* Legend */
+.lg-t{font-family:'Cinzel',serif;font-size:8px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.lg-i{display:flex;align-items:center;gap:7px;font-size:8px;color:var(--text-dim);margin-bottom:4px}
+.lg-d{width:10px;height:10px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center}
 
-  /* Legend */
-  .legend-title { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
-  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 9px; color: var(--text-dim); margin-bottom: 5px; }
+/* ═══ TREE ═══ */
+.ta{flex:1;overflow:auto;position:relative}
+.tv{position:relative;min-width:100%;min-height:100%}
+.ts{position:absolute;top:0;left:0;pointer-events:none;z-index:1}
 
-  /* Tree canvas */
-  .tree-area { flex: 1; overflow: auto; position: relative; }
-  .tree-viewport { position: relative; min-width: 100%; min-height: 100%; }
+/* ═══ CONNECTION PATHS ═══ */
+.cp{fill:none;stroke-linecap:round;transition:all .3s}
+.cp.locked{stroke:#14151e;stroke-width:3;stroke-dasharray:6 4;opacity:.4}
+.cp.ready{stroke:#222338;stroke-width:3;opacity:.5}
+.cp.active{stroke-width:4;opacity:.85}
+.cp.done{stroke-width:3.5;opacity:.6}
+.cp.glow{filter:drop-shadow(0 0 6px var(--glow-color))}
 
-  /* SVG connections layer */
-  .tree-svg { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
-  .conn { fill: none; stroke-width: 2; stroke-linecap: round; transition: opacity 0.3s; }
-  .conn.locked { stroke: #151520; stroke-dasharray: 4 3; opacity: 0.5; }
-  .conn.ready { stroke: #2a2a44; opacity: 0.6; }
-  .conn.active { stroke: var(--cyan); opacity: 0.7; filter: drop-shadow(0 0 3px var(--cyan-glow)); }
-  .conn.done { stroke: var(--green); opacity: 0.5; }
-  .conn.critical { stroke: var(--red); opacity: 0.7; stroke-width: 2.5; filter: drop-shadow(0 0 4px var(--red-glow)); }
+/* ═══ NODE ═══ */
+.nd{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:2;user-select:none;transition:transform .2s}
+.nd:hover{transform:scale(1.1);z-index:10}
+.nd:hover .nd-name{color:var(--text-bright)}
 
-  /* Node */
-  .tree-node {
-    position: absolute; display: flex; flex-direction: column; align-items: center;
-    cursor: pointer; transition: transform 0.2s, filter 0.3s;
-    z-index: 2; user-select: none;
-  }
-  .tree-node:hover { transform: scale(1.08); z-index: 10; }
-  .tree-node:hover .hex-label { color: var(--text-bright); }
+/* Medallion frame */
+.md{width:64px;height:64px;position:relative;display:flex;align-items:center;justify-content:center}
 
-  /* Hexagon frame */
-  .hex-frame {
-    width: 88px; height: 88px;
-    position: relative; display: flex; align-items: center; justify-content: center;
-  }
-  .hex-bg { position: absolute; inset: 0; }
-  .hex-bg polygon { fill: var(--bg2); stroke: var(--border); stroke-width: 2; transition: all 0.3s; }
-  .hex-icon { position: relative; z-index: 2; width: 36px; height: 36px; }
-  .hex-icon svg { width: 100%; height: 100%; }
-  .hex-icon svg path, .hex-icon svg circle, .hex-icon svg rect, .hex-icon svg line,
-  .hex-icon svg polyline, .hex-icon svg polygon, .hex-icon svg ellipse { transition: all 0.3s; }
+/* Outer ring SVG */
+.md svg.ring{position:absolute;inset:-4px;width:72px;height:72px}
+.ring-outer{fill:none;stroke-width:2;transition:all .3s}
+.ring-inner{fill:none;stroke-width:1.5;transition:all .3s}
+.ring-bg{transition:all .3s}
 
-  /* Status styles */
-  .tree-node[data-status="Locked"] { opacity: 0.35; filter: grayscale(0.8); }
-  .tree-node[data-status="Locked"] .hex-bg polygon { fill: #0a0a12; stroke: #151520; }
-  .tree-node[data-status="Locked"] .hex-icon svg * { stroke: #2a2a3a !important; fill: none !important; }
+/* Icon inside */
+.md .ico{position:relative;z-index:2;width:30px;height:30px}
+.md .ico svg{width:100%;height:100%}
+.md .ico svg *{transition:all .3s}
 
-  .tree-node[data-status="Not Started"] .hex-bg polygon { fill: var(--bg2); stroke: #2a2a44; stroke-width: 2; }
-  .tree-node[data-status="Not Started"] .hex-icon svg * { stroke: #556 !important; }
+/* Progress badge */
+.nd-badge{
+  position:absolute;bottom:-2px;right:-6px;z-index:4;
+  font-family:'Cinzel',serif;font-size:7px;font-weight:700;
+  padding:1px 4px;border-radius:2px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text-dim);letter-spacing:.5px;
+  min-width:22px;text-align:center;
+}
 
-  .tree-node[data-status="In Progress"] .hex-bg polygon {
-    fill: rgba(0,212,255,0.06); stroke: var(--cyan); stroke-width: 2.5;
-    filter: drop-shadow(0 0 8px var(--cyan-glow));
-    animation: hex-glow 3s ease-in-out infinite;
-  }
-  @keyframes hex-glow {
-    0%,100% { filter: drop-shadow(0 0 8px var(--cyan-glow)); }
-    50% { filter: drop-shadow(0 0 16px var(--cyan-glow)); }
-  }
-  .tree-node[data-status="In Progress"] .hex-icon svg * { stroke: var(--cyan) !important; }
+/* Node name */
+.nd-name{font-size:7px;font-weight:600;color:var(--text-dim);text-align:center;margin-top:4px;max-width:90px;line-height:1.15;letter-spacing:.2px;transition:color .2s}
 
-  .tree-node[data-status="Done"] .hex-bg polygon {
-    fill: rgba(0,255,136,0.06); stroke: var(--green); stroke-width: 2;
-    filter: drop-shadow(0 0 6px var(--green-glow));
-  }
-  .tree-node[data-status="Done"] .hex-icon svg * { stroke: var(--green) !important; }
+/* Branch label */
+.branch-label{
+  position:absolute;z-index:3;
+  font-family:'Cinzel',serif;font-size:9px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  text-shadow:0 0 20px currentColor;
+  opacity:.7;pointer-events:none;white-space:nowrap;
+}
 
-  .tree-node[data-status="Shipped"] .hex-bg polygon {
-    fill: rgba(201,168,76,0.06); stroke: var(--gold); stroke-width: 2.5;
-    filter: drop-shadow(0 0 8px var(--gold-glow));
-  }
-  .tree-node[data-status="Shipped"] .hex-icon svg * { stroke: var(--gold) !important; }
+/* ═══ STATUS STYLES ═══ */
+.nd[data-status="Locked"]{opacity:.3;filter:grayscale(.7)}
+.nd[data-status="Locked"] .ring-outer{stroke:#1a1b24}
+.nd[data-status="Locked"] .ring-inner{stroke:#141520}
+.nd[data-status="Locked"] .ring-bg{fill:#0c0d14}
+.nd[data-status="Locked"] .ico svg *{stroke:#222!important;fill:none!important}
+.nd[data-status="Locked"] .nd-badge{opacity:.4}
 
-  /* Branch dot */
-  .branch-dot {
-    position: absolute; top: 6px; right: 12px;
-    width: 8px; height: 8px; border-radius: 50%;
-    border: 1.5px solid var(--bg2); z-index: 3;
-  }
+.nd[data-status="Not Started"] .ring-outer{stroke:#2a2c42}
+.nd[data-status="Not Started"] .ring-inner{stroke:#222338}
+.nd[data-status="Not Started"] .ring-bg{fill:#111220}
+.nd[data-status="Not Started"] .ico svg *{stroke:#444!important}
 
-  /* Label */
-  .hex-label {
-    font-size: 8px; font-weight: 600; color: var(--text-dim);
-    text-align: center; margin-top: 2px; max-width: 100px;
-    line-height: 1.2; letter-spacing: 0.2px; transition: color 0.2s;
-  }
+.nd[data-status="In Progress"] .ring-bg{fill-opacity:.12}
+.nd[data-status="In Progress"] .md{animation:ndp 3s ease-in-out infinite}
+@keyframes ndp{0%,100%{filter:drop-shadow(0 0 8px var(--node-glow))}50%{filter:drop-shadow(0 0 18px var(--node-glow))}}
 
-  /* Progress under node */
-  .hex-progress { width: 48px; margin-top: 3px; display: flex; flex-direction: column; align-items: center; }
-  .hex-pbar { width: 100%; height: 3px; background: #0e0e18; border-radius: 2px; overflow: hidden; border: 1px solid #151520; }
-  .hex-pfill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-  .hex-plabel { font-family: 'Orbitron', sans-serif; font-size: 6px; color: var(--text-dim); margin-top: 1px; font-weight: 500; }
+.nd[data-status="Done"] .ring-bg{fill-opacity:.1}
+.nd[data-status="Done"] .md{filter:drop-shadow(0 0 6px var(--node-glow))}
 
-  /* Detail panel */
-  /* Modal overlay */
-  .detail-overlay { position: fixed; inset: 0; z-index: 190; background: rgba(0,0,0,0.7); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); }
-  .detail-overlay.open { opacity: 1; pointer-events: auto; }
+.nd[data-status="Shipped"] .ring-bg{fill-opacity:.12}
+.nd[data-status="Shipped"] .md{filter:drop-shadow(0 0 10px var(--node-glow))}
+.nd[data-status="Shipped"] .nd-badge{background:var(--gold);color:#000;border-color:var(--gold)}
 
-  /* Centered modal */
-  .detail-panel {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.92);
-    width: 580px; max-width: 92vw; max-height: 85vh;
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 8px;
-    z-index: 200; overflow-y: auto; padding: 28px 32px;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,212,255,0.04);
-  }
-  .detail-panel.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-  .detail-close {
-    position: absolute; top: 14px; right: 14px;
-    width: 28px; height: 28px; border-radius: 4px;
-    border: 1px solid var(--border); background: var(--bg);
-    color: var(--text-dim); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; transition: all 0.2s;
-  }
-  .detail-close:hover { border-color: var(--cyan); color: #fff; }
+/* Diamond milestone node */
+.nd.diamond .md{transform:rotate(45deg);width:48px;height:48px}
+.nd.diamond .md .ico{transform:rotate(-45deg)}
+.nd.diamond .md svg.ring{width:56px;height:56px;inset:-4px}
+.nd.diamond .nd-badge{bottom:-6px;right:-10px}
 
-  /* Modal header */
-  .detail-branch { display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 8px; font-weight: 600; padding: 2px 7px; border-radius: 2px; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-  .detail-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; line-height: 1.3; }
-  .detail-phase { font-size: 10px; color: var(--text-dim); margin-bottom: 16px; }
+/* ═══ DETAIL MODAL ═══ */
+.dov{position:fixed;inset:0;z-index:190;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
+.dov.open{opacity:1;pointer-events:auto}
+.dp{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.92);
+  width:580px;max-width:92vw;max-height:85vh;
+  background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  z-index:200;overflow-y:auto;padding:24px 28px;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 1px rgba(212,168,50,.1)}
+.dp.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.dc{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:3px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+.dc:hover{border-color:var(--gold);color:#fff}
+.d-branch{display:inline-block;font-family:'Cinzel',serif;font-size:8px;font-weight:600;padding:2px 7px;border-radius:2px;margin-bottom:5px;letter-spacing:1px;text-transform:uppercase}
+.d-title{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:3px;line-height:1.3}
+.d-phase{font-size:10px;color:var(--text-dim);margin-bottom:14px}
+.d-cols{display:flex;gap:24px}
+.d-col{flex:1;min-width:0}
+.d-prog{margin-bottom:16px}
+.d-prog-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.d-prog-l{font-family:'Cinzel',serif;font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);font-weight:600}
+.d-prog-v{font-family:'Cinzel',serif;font-size:11px;font-weight:700}
+.d-pbar{width:100%;height:8px;background:#0e0f18;border-radius:4px;overflow:hidden;border:1px solid #1a1b28}
+.d-pfill{height:100%;border-radius:4px;transition:width .5s}
+.d-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(30,32,48,.4)}
+.d-row-l{font-size:10px;color:var(--text-dim)}
+.d-row-v{font-size:10px;color:#fff;font-weight:600}
+.d-sec{margin-bottom:10px}
+.d-sec-t{font-family:'Cinzel',serif;font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:4px;font-weight:600}
+.d-sec-c{font-size:11px;color:var(--text);line-height:1.5}
+.d-dep{font-size:10px;padding:3px 7px;background:rgba(153,85,238,.06);border:1px solid rgba(153,85,238,.12);border-radius:3px;color:#a78bfa;cursor:pointer;transition:all .2s;margin-bottom:3px}
+.d-dep:hover{background:rgba(153,85,238,.12)}
+.d-unl{font-size:10px;padding:3px 7px;background:rgba(34,221,102,.06);border:1px solid rgba(34,221,102,.12);border-radius:3px;color:var(--green);cursor:pointer;transition:all .2s;margin-bottom:3px}
+.d-unl:hover{background:rgba(34,221,102,.12)}
+.d-blk{font-size:10px;padding:5px 8px;background:rgba(221,51,68,.06);border:1px solid rgba(221,51,68,.12);border-radius:3px;color:var(--red);line-height:1.4}
 
-  /* Two-column layout inside modal */
-  .detail-columns { display: flex; gap: 24px; }
-  .detail-col-left { flex: 1; min-width: 0; }
-  .detail-col-right { flex: 1; min-width: 0; }
+/* Checklist */
+.cl-gt{font-family:'Cinzel',serif;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin:8px 0 4px;font-weight:600}
+.cl-gt:first-child{margin-top:0}
+.cl-i{display:flex;align-items:center;gap:7px;padding:4px 7px;margin-bottom:2px;border-radius:3px;font-size:10px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.02);transition:background .2s}
+.cl-i:hover{background:rgba(255,255,255,.03)}
+.cl-i.done{opacity:.65}
+.cl-i.done .cl-t{text-decoration:line-through;color:var(--text-dim)}
+.cl-ic{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.cl-ic.done{background:rgba(34,221,102,.12);color:var(--green)}
+.cl-ic.pending{background:rgba(255,255,255,.03);color:var(--text-dim);border:1px solid rgba(255,255,255,.06)}
+.cl-ic.active{background:rgba(0,204,255,.12);color:var(--cyan)}
+.cl-t{color:var(--text);flex:1}
+.cl-s{font-size:7px;font-weight:600;padding:1px 4px;border-radius:2px;letter-spacing:.3px}
+.cl-s.done{background:rgba(34,221,102,.08);color:var(--green)}
+.cl-s.active{background:rgba(0,204,255,.08);color:var(--cyan)}
+.cl-s.pending{background:rgba(255,255,255,.03);color:var(--text-dim)}
+.cl-click{cursor:pointer}.cl-click:hover{background:rgba(153,85,238,.06);border-color:rgba(153,85,238,.12)}
 
-  /* Progress section */
-  .detail-progress-section { margin-bottom: 18px; }
-  .detail-progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .detail-progress-label { font-family: 'Orbitron', sans-serif; font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600; }
-  .detail-progress-value { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; }
-  .detail-pbar { width: 100%; height: 8px; background: #0e0e18; border-radius: 4px; overflow: hidden; border: 1px solid #1a1a28; }
-  .detail-pfill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+@media(max-width:700px){.d-cols{flex-direction:column;gap:12px}.dp{padding:18px 14px}}
 
-  /* Progress checklist */
-  .progress-checklist { margin-top: 10px; }
-  .checklist-group-title { font-family: 'Orbitron', sans-serif; font-size: 7px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 5px; margin-top: 10px; font-weight: 600; }
-  .checklist-group-title:first-child { margin-top: 0; }
-  .checklist-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 5px 8px; margin-bottom: 3px;
-    border-radius: 3px; font-size: 11px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.03);
-    transition: background 0.2s;
-  }
-  .checklist-item:hover { background: rgba(255,255,255,0.04); }
-  .checklist-item.done { opacity: 0.7; }
-  .checklist-item.done .checklist-text { text-decoration: line-through; color: var(--text-dim); }
-  .checklist-icon {
-    width: 16px; height: 16px; border-radius: 3px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; flex-shrink: 0;
-  }
-  .checklist-icon.done { background: rgba(0,255,136,0.12); color: var(--green); }
-  .checklist-icon.pending { background: rgba(255,255,255,0.04); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.08); }
-  .checklist-icon.active { background: rgba(0,212,255,0.12); color: var(--cyan); }
-  .checklist-text { color: var(--text); flex: 1; }
-  .checklist-status { font-size: 8px; font-weight: 600; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 2px; }
-  .checklist-status.done { background: rgba(0,255,136,0.1); color: var(--green); }
-  .checklist-status.active { background: rgba(0,212,255,0.1); color: var(--cyan); }
-  .checklist-status.pending { background: rgba(255,255,255,0.04); color: var(--text-dim); }
-  .checklist-clickable { cursor: pointer; }
-  .checklist-clickable:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.15); }
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#1e2030;border-radius:2px}
 
-  /* Info rows */
-  .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(26,26,46,0.4); }
-  .detail-row-label { font-size: 10px; color: var(--text-dim); }
-  .detail-row-value { font-size: 10px; color: #fff; font-weight: 600; }
-  .detail-section { margin-bottom: 12px; }
-  .detail-section-title { font-family: 'Orbitron', sans-serif; font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 5px; font-weight: 600; }
-  .detail-section-content { font-size: 11px; color: var(--text); line-height: 1.5; }
-  .detail-dep-item {
-    font-size: 10px; padding: 3px 7px;
-    background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.12);
-    border-radius: 3px; color: #a78bfa; cursor: pointer; transition: all 0.2s; margin-bottom: 3px;
-  }
-  .detail-dep-item:hover { background: rgba(139,92,246,0.12); }
-  .detail-unlock-item {
-    font-size: 10px; padding: 3px 7px;
-    background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.12);
-    border-radius: 3px; color: var(--green); cursor: pointer; transition: all 0.2s; margin-bottom: 3px;
-  }
-  .detail-unlock-item:hover { background: rgba(0,255,136,0.12); }
-  .blocker-badge { font-size: 10px; padding: 5px 8px; background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.15); border-radius: 3px; color: var(--red); line-height: 1.4; }
-
-  @media (max-width: 700px) {
-    .detail-columns { flex-direction: column; gap: 12px; }
-    .detail-panel { padding: 20px 16px; }
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 2px; }
-
-  @media (max-width: 900px) {
-    .quest-panel { display: none; }
-    .top-stats { display: none; }
-    .detail-panel { width: 95vw; max-height: 90vh; }
-  }
+@media(max-width:900px){.qp{display:none}.top-r{display:none}.dp{width:95vw;max-height:90vh}}
 </style>
 </head>
 <body>
-<div class="bg-grid"></div>
+<div class="bg-tex"></div>
 
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-logo">CLTR</div>
-  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
-  <div class="loading-text">Initializing skill tree...</div>
+<div class="ld" id="ld">
+  <div class="ld-logo">CLTR</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+  <div class="ld-txt">Channeling the skill tree...</div>
 </div>
 
-<div class="top-bar">
-  <div class="top-left">
-    <div><div class="logo">CLTR</div><div class="logo-sub">Skill Tree</div></div>
-    <div class="sync-badge" onclick="fetchNodes()">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncText">Live</span>
-    </div>
+<div class="top">
+  <div class="top-l">
+    <div><div class="logo">CLTR</div><div class="logo-s">Skill Tree</div></div>
+    <div class="sync" onclick="fetchNodes()"><div class="sd" id="sd"></div><span id="st">Live</span></div>
   </div>
-  <div class="top-stats">
-    <div class="stat"><div class="stat-value" id="statNodes">&mdash;</div><div class="stat-label">Nodes</div></div>
-    <div class="stat"><div class="stat-value" id="statActive">&mdash;</div><div class="stat-label">Active</div></div>
-    <div class="stat"><div class="stat-value" id="statDone">&mdash;</div><div class="stat-label">Done</div></div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="stat-label" style="margin-top:2px"><span id="statPct">0</span>%</div>
-    </div>
+  <div class="top-r">
+    <div class="st"><div class="st-v" id="sN">&mdash;</div><div class="st-l">Nodes</div></div>
+    <div class="st"><div class="st-v" id="sA">&mdash;</div><div class="st-l">Active</div></div>
+    <div class="st"><div class="st-v" id="sD">&mdash;</div><div class="st-l">Done</div></div>
+    <div style="text-align:center"><div class="pb"><div class="pf" id="pf" style="width:0%"></div></div><div class="st-l" style="margin-top:2px"><span id="sP">0</span>%</div></div>
   </div>
 </div>
 
-<div class="app-layout">
-  <div class="quest-panel">
-    <div class="quest-header">Daily Quests</div>
-    <div class="quest-sub">3 recommended focus areas</div>
-    <div id="questList"></div>
-    <div class="quest-divider"></div>
-    <div class="legend-title">Status</div>
-    <div class="legend-item"><svg width="14" height="14"><polygon points="7,1 13,4 13,10 7,13 1,10 1,4" fill="#0a0a12" stroke="#151520" stroke-width="1.5"/></svg> Locked</div>
-    <div class="legend-item"><svg width="14" height="14"><polygon points="7,1 13,4 13,10 7,13 1,10 1,4" fill="var(--bg2)" stroke="#2a2a44" stroke-width="1.5"/></svg> Not Started</div>
-    <div class="legend-item"><svg width="14" height="14"><polygon points="7,1 13,4 13,10 7,13 1,10 1,4" fill="rgba(0,212,255,0.08)" stroke="var(--cyan)" stroke-width="1.5"/></svg> In Progress</div>
-    <div class="legend-item"><svg width="14" height="14"><polygon points="7,1 13,4 13,10 7,13 1,10 1,4" fill="rgba(0,255,136,0.08)" stroke="var(--green)" stroke-width="1.5"/></svg> Done</div>
-    <div class="legend-item"><svg width="14" height="14"><polygon points="7,1 13,4 13,10 7,13 1,10 1,4" fill="rgba(201,168,76,0.08)" stroke="var(--gold)" stroke-width="1.5"/></svg> Shipped</div>
-    <div class="quest-divider"></div>
-    <div class="legend-title">Branches</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--pink)"></div> Design & Brand</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--cyan)"></div> Core Product</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div> Operations</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div> GTM & Marketing</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--red)"></div> Token & DeFi</div>
-    <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div> Multi-Category</div>
+<div class="app">
+  <div class="qp">
+    <div class="qp-h">Daily Quests</div>
+    <div class="qp-s">Suggested focus areas</div>
+    <div id="ql"></div>
+    <div class="qdiv"></div>
+    <div class="lg-t">Status</div>
+    <div class="lg-i"><div class="lg-d" style="border-color:#1a1b24;background:#0c0d14"></div>Locked</div>
+    <div class="lg-i"><div class="lg-d" style="border-color:#2a2c42;background:#111220"></div>Not Started</div>
+    <div class="lg-i"><div class="lg-d" style="border-color:var(--cyan);background:rgba(0,204,255,.1);box-shadow:0 0 6px var(--cyan-g)"></div>In Progress</div>
+    <div class="lg-i"><div class="lg-d" style="border-color:var(--green);background:rgba(34,221,102,.1)"></div>Done</div>
+    <div class="lg-i"><div class="lg-d" style="border-color:var(--gold);background:rgba(212,168,50,.1);box-shadow:0 0 6px var(--gold-g)"></div>Shipped</div>
+    <div class="qdiv"></div>
+    <div class="lg-t">Branches</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--pink)"></div>Design & Brand</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--cyan)"></div>Core Product</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Operations</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div>GTM & Marketing</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--red)"></div>Token & DeFi</div>
+    <div class="lg-i"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div>Multi-Category</div>
   </div>
 
-  <div class="tree-area" id="treeArea">
-    <div class="tree-viewport" id="treeViewport">
-      <svg class="tree-svg" id="treeSvg"></svg>
-    </div>
+  <div class="ta" id="ta">
+    <div class="tv" id="tv"><svg class="ts" id="tsvg"></svg></div>
   </div>
 </div>
 
-<div class="detail-overlay" id="detailOverlay" onclick="closeDetail()"></div>
-<div class="detail-panel" id="detailPanel">
-  <button class="detail-close" onclick="closeDetail()">&#10005;</button>
-  <div id="detailContent"></div>
-</div>
+<div class="dov" id="dov" onclick="closeDetail()"></div>
+<div class="dp" id="dp"><button class="dc" onclick="closeDetail()">&#10005;</button><div id="dpc"></div></div>
 
 <script>
-const API_URL = '/api/nodes';
-const AUTO_REFRESH_MS = 30000;
-let nodes = [];
-let nodeMap = {};
-let selectedNode = null;
+const API='/api/nodes',REFRESH=30000;
+let nodes=[],NM={},sel=null;
 
-const branchColors = {
-  "Design & Brand": "#ec4899", "Core Product": "#00d4ff", "Operations": "#00ff88",
-  "GTM & Marketing": "#ff8800", "Token & DeFi": "#ff3366", "Multi-Category": "#8b5cf6"
+const BC={"Design & Brand":"#dd44aa","Core Product":"#00ccff","Operations":"#22dd66","GTM & Marketing":"#ee8822","Token & DeFi":"#dd3344","Multi-Category":"#9955ee"};
+const BG={"Design & Brand":"rgba(221,68,170,.3)","Core Product":"rgba(0,204,255,.3)","Operations":"rgba(34,221,102,.3)","GTM & Marketing":"rgba(238,136,34,.3)","Token & DeFi":"rgba(221,51,68,.3)","Multi-Category":"rgba(153,85,238,.3)"};
+const SI={'Done':'\u2713','In Progress':'\u25B6','Shipped':'\u2605','Locked':'\uD83D\uDD12','Not Started':'\u25CB'};
+
+// ═══ SVG ICONS ═══
+const IC={
+"brand-identity":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,2 28,8 28,20 15,28 2,20 2,8"/><circle cx="15" cy="15" r="5"/><line x1="15" y1="2" x2="15" y2="10"/><line x1="15" y1="20" x2="15" y2="28"/></svg>`,
+"landing-page":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="4" y="4" width="22" height="22" rx="2"/><line x1="4" y1="10" x2="26" y2="10"/><rect x="8" y="13" width="14" height="4" rx="1"/><rect x="8" y="20" width="8" height="3" rx="1"/></svg>`,
+"card-render":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="6" y="2" width="18" height="26" rx="2"/><polygon points="15,7 19,13 11,13"/><polygon points="15,23 11,17 19,17"/><circle cx="15" cy="15" r="2"/></svg>`,
+"smart-contracts":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="4" y="4" width="9" height="9" rx="1"/><rect x="17" y="4" width="9" height="9" rx="1"/><rect x="4" y="17" width="9" height="9" rx="1"/><rect x="17" y="17" width="9" height="9" rx="1"/><line x1="13" y1="8.5" x2="17" y2="8.5"/><line x1="13" y1="21.5" x2="17" y2="21.5"/><line x1="8.5" y1="13" x2="8.5" y2="17"/><line x1="21.5" y1="13" x2="21.5" y2="17"/></svg>`,
+"supabase":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><ellipse cx="15" cy="8" rx="10" ry="3.5"/><path d="M5 8v7c0 1.9 4.5 3.5 10 3.5s10-1.6 10-3.5V8"/><path d="M5 15v7c0 1.9 4.5 3.5 10 3.5s10-1.6 10-3.5v-7"/></svg>`,
+"gacha-mvp":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="12"/><circle cx="15" cy="15" r="6"/><circle cx="15" cy="15" r="1.5"/><line x1="15" y1="3" x2="15" y2="9"/><line x1="15" y1="21" x2="15" y2="27"/><line x1="3" y1="15" x2="9" y2="15"/><line x1="21" y1="15" x2="27" y2="15"/></svg>`,
+"marketplace-mvp":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M4 12L15 4l11 8"/><rect x="6" y="12" width="18" height="14" rx="1"/><rect x="11" y="19" width="8" height="7"/><line x1="6" y1="18" x2="24" y2="18"/></svg>`,
+"testnet":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,3 27,15 15,27 3,15"/><circle cx="15" cy="15" r="3.5"/><line x1="15" y1="3" x2="15" y2="11.5"/></svg>`,
+"security-audit":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M15 3L5 8v6c0 6.5 4.3 12.6 10 15 5.7-2.4 10-8.5 10-15V8L15 3z"/><polyline points="11,15 14,18 20,12"/></svg>`,
+"fmv-oracle":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="10"/><circle cx="15" cy="15" r="3.5"/><line x1="15" y1="2" x2="15" y2="5"/><line x1="15" y1="25" x2="15" y2="28"/><line x1="2" y1="15" x2="5" y2="15"/><line x1="25" y1="15" x2="28" y2="15"/></svg>`,
+"mainnet":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,1 29,8 29,22 15,29 1,22 1,8"/><polygon points="15,6 24,11 24,19 15,24 6,19 6,11"/><circle cx="15" cy="15" r="2.5"/></svg>`,
+"custody":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="5" y="12" width="20" height="15" rx="2"/><path d="M10 12V9a5 5 0 0 1 10 0v3"/><circle cx="15" cy="20" r="2.5"/><line x1="15" y1="20" x2="15" y2="23"/></svg>`,
+"vault-intake":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="6" width="24" height="19" rx="2.5"/><circle cx="15" cy="16" r="5"/><circle cx="15" cy="16" r="1.5"/></svg>`,
+"grading-sop":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="6" y="2" width="18" height="26" rx="2"/><line x1="10" y1="8" x2="20" y2="8"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="16" x2="17" y2="16"/><polyline points="10,21 12.5,24 18,19"/></svg>`,
+"investor-deck":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="6" width="24" height="18" rx="2"/><polygon points="13,11 13,21 21,16"/></svg>`,
+"fundraise":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="10"/><path d="M15 8v14"/><path d="M12 11.5h5a2.5 2.5 0 0 1 0 5h-5"/><path d="M12 16.5h5.5a2.5 2.5 0 0 1 0 5H12"/></svg>`,
+"edition-campaign":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="5,3 25,3 28,15 25,27 5,27 2,15"/><circle cx="15" cy="15" r="5"/></svg>`,
+"kol-wave-1":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="11" r="5"/><path d="M7 26c0-4.4 3.6-8 8-8s8 3.6 8 8"/><polyline points="21,6 24,3 27,6"/><line x1="24" y1="3" x2="24" y2="11"/></svg>`,
+"community-channels":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M3 21V10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-6 4z"/><path d="M21 12h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2v3l-5-3h-3"/></svg>`,
+"flash-sell":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3" stroke-linejoin="round"><polygon points="17,3 7,17 14,17 12,27 24,12 17,12"/></svg>`,
+"kol-wave-2":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="10" cy="10" r="4.5"/><circle cx="20" cy="10" r="4.5"/><path d="M3 24c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M13 24c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>`,
+"content-engine":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="5" y="5" width="20" height="20" rx="2"/><polygon points="13,11 13,19 20,15"/></svg>`,
+"guild-partnerships":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="8" r="4"/><circle cx="7" cy="22" r="4"/><circle cx="23" cy="22" r="4"/><line x1="12" y1="11" x2="9" y2="19"/><line x1="18" y1="11" x2="21" y2="19"/><line x1="11" y1="22" x2="19" y2="22"/></svg>`,
+"apac-hub":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="11"/><ellipse cx="15" cy="15" rx="5" ry="11"/><line x1="4" y1="10" x2="26" y2="10"/><line x1="4" y1="20" x2="26" y2="20"/></svg>`,
+"global-kol":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="11"/><ellipse cx="15" cy="15" rx="5" ry="11"/><line x1="4" y1="15" x2="26" y2="15"/></svg>`,
+"token-launch":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M15 3L7 27h16L15 3z"/><line x1="15" y1="12" x2="15" y2="20"/><circle cx="15" cy="22" r="1.2"/></svg>`,
+"staking":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="7" y="3" width="16" height="5" rx="1.5"/><rect x="7" y="11" width="16" height="5" rx="1.5"/><rect x="7" y="19" width="16" height="5" rx="1.5"/><line x1="15" y1="8" x2="15" y2="11"/><line x1="15" y1="16" x2="15" y2="19"/></svg>`,
+"liquidity-pools":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="12" cy="12" r="7"/><circle cx="18" cy="18" r="7"/></svg>`,
+"institutional-lending":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M3 12l12-8 12 8"/><rect x="5" y="12" width="20" height="3"/><line x1="8" y1="15" x2="8" y2="23"/><line x1="15" y1="15" x2="15" y2="23"/><line x1="22" y1="15" x2="22" y2="23"/><rect x="3" y="23" width="24" height="3" rx="1"/></svg>`,
+"dao-treasury":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,1 29,8 29,22 15,29 1,22 1,8"/><circle cx="15" cy="15" r="5"/><path d="M15 12v6M13 15h4"/></svg>`,
+"decentralization":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="5" r="3.5"/><circle cx="5" cy="25" r="3.5"/><circle cx="25" cy="25" r="3.5"/><circle cx="15" cy="15" r="2.5"/><line x1="15" y1="8.5" x2="15" y2="12.5"/><line x1="13" y1="17" x2="7.5" y2="22.5"/><line x1="17" y1="17" x2="22.5" y2="22.5"/></svg>`,
+"multi-category":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="3" width="10" height="10" rx="2"/><circle cx="22" cy="8" r="5"/><polygon points="8,19 13,27 3,27"/><rect x="17" y="19" width="10" height="8" rx="2"/></svg>`,
+"sports-luxury":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,1 18.5,10 28,11 21,18 23,28 15,23 7,28 9,18 2,11 11.5,10"/></svg>`,
+"seller-portal":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="3" width="24" height="24" rx="2"/><path d="M3 10h24"/><circle cx="10" cy="19" r="3.5"/><rect x="17" y="15" width="7" height="3" rx="1"/><rect x="17" y="21" width="7" height="3" rx="1"/></svg>`,
+"inventory":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="4" width="24" height="22" rx="2"/><line x1="3" y1="12" x2="27" y2="12"/><line x1="3" y1="20" x2="27" y2="20"/><line x1="15" y1="4" x2="15" y2="26"/></svg>`,
+"analytics":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polyline points="3,24 10,16 15,19 21,9 27,12"/><line x1="3" y1="27" x2="27" y2="27"/><line x1="3" y1="3" x2="3" y2="27"/></svg>`,
+"multi-vault":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="1" y="9" width="12" height="10" rx="2"/><rect x="17" y="9" width="12" height="10" rx="2"/><circle cx="7" cy="14" r="2.5"/><circle cx="23" cy="14" r="2.5"/><line x1="13" y1="14" x2="17" y2="14"/></svg>`,
+"insurance":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><path d="M15 3L5 8v6c0 6.5 4.3 12.6 10 15 5.7-2.4 10-8.5 10-15V8L15 3z"/><line x1="15" y1="12" x2="15" y2="19"/><line x1="12" y1="15.5" x2="18" y2="15.5"/></svg>`,
+"permissionless-custody":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="11"/><circle cx="15" cy="15" r="6"/><circle cx="15" cy="15" r="1.5"/><path d="M15 4v5M15 21v5M4 15h5M21 15h5"/></svg>`,
+"whale-services":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,3 18.5,11 28,12 21,18 23,28 15,23 7,28 9,18 2,12 11.5,11"/><circle cx="15" cy="14" r="3"/></svg>`,
+"dashboard":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="3" y="3" width="24" height="24" rx="2"/><line x1="3" y1="12" x2="27" y2="12"/><line x1="14" y1="12" x2="14" y2="27"/></svg>`,
+"pwa":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="8" y="2" width="14" height="26" rx="3"/><line x1="8" y1="6" x2="22" y2="6"/><line x1="8" y1="24" x2="22" y2="24"/><circle cx="15" cy="26" r="1"/></svg>`,
+"perpetual-gacha":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="11"/><path d="M15 4a11 11 0 0 1 7.8 3.2"/><polyline points="23,4 22.8,7.5 19.5,7.7"/><path d="M15 26a11 11 0 0 1-7.8-3.2"/><polyline points="7,26 7.2,22.5 10.5,22.3"/></svg>`,
+"advanced-gacha":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="11"/><circle cx="15" cy="15" r="6"/><circle cx="15" cy="15" r="1.5"/><line x1="6" y1="6" x2="10" y2="10"/><line x1="20" y1="20" x2="24" y2="24"/><line x1="6" y1="24" x2="10" y2="20"/><line x1="20" y1="10" x2="24" y2="6"/></svg>`,
+"fmv-oracle-v2":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="15" r="10"/><circle cx="15" cy="15" r="5"/><circle cx="15" cy="15" r="1.5"/><path d="M7 7l3 3M20 20l3 3M7 23l3-3M20 10l3-3"/></svg>`,
+"api-sdk":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polyline points="9,10 3,15 9,20"/><polyline points="21,10 27,15 21,20"/><line x1="18" y1="6" x2="12" y2="24"/></svg>`,
+"cross-platform":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="8" cy="8" r="5"/><circle cx="22" cy="8" r="5"/><circle cx="15" cy="24" r="5"/><line x1="11" y1="12" x2="13" y2="20"/><line x1="19" y1="12" x2="17" y2="20"/><line x1="13" y1="8" x2="17" y2="8"/></svg>`,
+"community-ugm":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><circle cx="15" cy="10" r="3.5"/><circle cx="8" cy="21" r="3.5"/><circle cx="22" cy="21" r="3.5"/><line x1="15" y1="13.5" x2="10" y2="18.5"/><line x1="15" y1="13.5" x2="20" y2="18.5"/><line x1="11.5" y1="21" x2="18.5" y2="21"/></svg>`,
+"mobile-app":`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><rect x="7" y="2" width="16" height="26" rx="3"/><line x1="7" y1="6" x2="23" y2="6"/><line x1="7" y1="24" x2="23" y2="24"/><circle cx="15" cy="26" r="1"/><polyline points="12,14 15,10 18,14"/><line x1="15" y1="10" x2="15" y2="20"/></svg>`,
 };
-const statusIcons = { 'Done':'\u2705','In Progress':'\uD83D\uDD04','Shipped':'\uD83D\uDE80','Locked':'\uD83D\uDD12','Not Started':'\u26AA' };
+const DI=`<svg viewBox="0 0 30 30" fill="none" stroke="#666" stroke-width="1.3"><polygon points="15,3 28,9 28,21 15,27 2,21 2,9"/><circle cx="15" cy="15" r="4"/></svg>`;
+function gi(id){return IC[id]||DI}
 
-// ===== SVG ICONS (retro-futuristic geometric) =====
-const nodeIcons = {
-  "brand-identity": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="18,4 32,12 32,24 18,32 4,24 4,12"/><circle cx="18" cy="18" r="6"/><line x1="18" y1="4" x2="18" y2="12"/><line x1="18" y1="24" x2="18" y2="32"/></svg>`,
-  "landing-page": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="6" width="24" height="24" rx="2"/><line x1="6" y1="12" x2="30" y2="12"/><circle cx="10" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/><rect x="10" y="16" width="16" height="4" rx="1"/><rect x="10" y="23" width="8" height="3" rx="1"/></svg>`,
-  "card-render": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="8" y="4" width="20" height="28" rx="2"/><polygon points="18,10 22,16 14,16"/><polygon points="18,26 14,20 22,20"/><circle cx="18" cy="18" r="2"/></svg>`,
-  "smart-contracts": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="10" height="10" rx="1"/><rect x="20" y="6" width="10" height="10" rx="1"/><rect x="6" y="20" width="10" height="10" rx="1"/><rect x="20" y="20" width="10" height="10" rx="1"/><line x1="16" y1="11" x2="20" y2="11"/><line x1="16" y1="25" x2="20" y2="25"/><line x1="11" y1="16" x2="11" y2="20"/><line x1="25" y1="16" x2="25" y2="20"/></svg>`,
-  "supabase": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><ellipse cx="18" cy="10" rx="12" ry="4"/><path d="M6 10v8c0 2.2 5.4 4 12 4s12-1.8 12-4V10"/><path d="M6 18v8c0 2.2 5.4 4 12 4s12-1.8 12-4v-8"/></svg>`,
-  "gacha-mvp": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><circle cx="18" cy="18" r="7"/><circle cx="18" cy="18" r="2"/><line x1="18" y1="5" x2="18" y2="11"/><line x1="18" y1="25" x2="18" y2="31"/><line x1="5" y1="18" x2="11" y2="18"/><line x1="25" y1="18" x2="31" y2="18"/></svg>`,
-  "marketplace-mvp": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M6 14L18 6l12 8"/><rect x="8" y="14" width="20" height="16" rx="1"/><rect x="14" y="22" width="8" height="8"/><line x1="8" y1="20" x2="28" y2="20"/></svg>`,
-  "testnet": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="18,4 32,18 18,32 4,18"/><circle cx="18" cy="18" r="4"/><line x1="18" y1="4" x2="18" y2="14"/><line x1="22" y1="18" x2="32" y2="18"/></svg>`,
-  "security-audit": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M18 4L6 10v8c0 7.7 5.1 14.9 12 18 6.9-3.1 12-10.3 12-18V10L18 4z"/><polyline points="13,18 17,22 24,14"/></svg>`,
-  "fmv-oracle": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="12"/><circle cx="18" cy="18" r="4"/><line x1="18" y1="2" x2="18" y2="6"/><line x1="18" y1="30" x2="18" y2="34"/><line x1="2" y1="18" x2="6" y2="18"/><line x1="30" y1="18" x2="34" y2="18"/><line x1="7" y1="7" x2="10" y2="10"/><line x1="26" y1="26" x2="29" y2="29"/></svg>`,
-  "mainnet": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="18,2 34,10 34,26 18,34 2,26 2,10"/><polygon points="18,8 28,13 28,23 18,28 8,23 8,13"/><circle cx="18" cy="18" r="3"/></svg>`,
-  "auction-house": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="30" y2="30"/><line x1="30" y1="30" x2="26" y2="30"/><line x1="30" y1="30" x2="30" y2="26"/></svg>`,
-  "lending": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="18" r="8"/><circle cx="24" cy="18" r="8"/><path d="M18 12v12"/></svg>`,
-  "points-system": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="18,2 22,14 34,14 24,22 28,34 18,26 8,34 12,22 2,14 14,14"/></svg>`,
-  "lgm-packs": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="8" width="24" height="20" rx="2"/><path d="M6 14h24"/><rect x="12" y="18" width="12" height="6" rx="1"/><line x1="18" y1="8" x2="18" y2="4"/><circle cx="18" cy="4" r="2"/></svg>`,
-  "dashboard": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="28" height="28" rx="2"/><line x1="4" y1="14" x2="32" y2="14"/><line x1="16" y1="14" x2="16" y2="32"/><rect x="6" y="16" width="8" height="6" rx="1"/><rect x="18" y="16" width="12" height="3" rx="1"/></svg>`,
-  "pwa": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="10" y="4" width="16" height="28" rx="3"/><line x1="10" y1="8" x2="26" y2="8"/><line x1="10" y1="28" x2="26" y2="28"/><circle cx="18" cy="30" r="1"/></svg>`,
-  "perpetual-gacha": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><path d="M18 5a13 13 0 0 1 9.2 3.8"/><polyline points="27,5 27.2,8.8 23.4,9"/><path d="M18 31a13 13 0 0 1-9.2-3.8"/><polyline points="9,31 8.8,27.2 12.6,27"/></svg>`,
-  "advanced-gacha": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><circle cx="18" cy="18" r="7"/><circle cx="18" cy="18" r="2"/><line x1="8" y1="8" x2="12" y2="12"/><line x1="24" y1="24" x2="28" y2="28"/><line x1="8" y1="28" x2="12" y2="24"/><line x1="24" y1="12" x2="28" y2="8"/></svg>`,
-  "fmv-oracle-v2": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="12"/><circle cx="18" cy="18" r="6"/><circle cx="18" cy="18" r="2"/><path d="M8 8l4 4M24 24l4 4M8 28l4-4M24 12l4-4"/></svg>`,
-  "api-sdk": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polyline points="10,12 4,18 10,24"/><polyline points="26,12 32,18 26,24"/><line x1="21" y1="8" x2="15" y2="28"/></svg>`,
-  "cross-platform": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><circle cx="26" cy="10" r="6"/><circle cx="18" cy="28" r="6"/><line x1="14" y1="14" x2="16" y2="24"/><line x1="22" y1="14" x2="20" y2="24"/><line x1="16" y1="10" x2="20" y2="10"/></svg>`,
-  "community-ugm": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="12" r="4"/><circle cx="10" cy="24" r="4"/><circle cx="26" cy="24" r="4"/><line x1="18" y1="16" x2="12" y2="21"/><line x1="18" y1="16" x2="24" y2="21"/><line x1="14" y1="24" x2="22" y2="24"/></svg>`,
-  "mobile-app": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="9" y="3" width="18" height="30" rx="3"/><line x1="9" y1="8" x2="27" y2="8"/><line x1="9" y1="28" x2="27" y2="28"/><circle cx="18" cy="31" r="1.2"/><polyline points="14,16 18,12 22,16"/><line x1="18" y1="12" x2="18" y2="24"/></svg>`,
-  "custody": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="14" width="24" height="18" rx="2"/><path d="M12 14V10a6 6 0 0 1 12 0v4"/><circle cx="18" cy="23" r="3"/><line x1="18" y1="23" x2="18" y2="27"/></svg>`,
-  "vault-intake": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="8" width="28" height="22" rx="3"/><circle cx="18" cy="19" r="6"/><circle cx="18" cy="19" r="2"/><line x1="24" y1="19" x2="28" y2="19"/></svg>`,
-  "grading-sop": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="8" y="4" width="20" height="28" rx="2"/><line x1="12" y1="10" x2="24" y2="10"/><line x1="12" y1="15" x2="24" y2="15"/><line x1="12" y1="20" x2="20" y2="20"/><polyline points="12,25 15,28 22,22"/></svg>`,
-  "investor-deck": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="8" width="28" height="20" rx="2"/><polygon points="16,14 16,24 24,19"/><line x1="4" y1="32" x2="32" y2="32"/></svg>`,
-  "fundraise": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="12"/><path d="M18 10v16"/><path d="M14 14h6a3 3 0 0 1 0 6h-6"/><path d="M14 20h7a3 3 0 0 1 0 6h-7"/></svg>`,
-  "seller-portal": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="28" height="28" rx="2"/><path d="M4 12h28"/><circle cx="12" cy="22" r="4"/><rect x="20" y="18" width="8" height="3" rx="1"/><rect x="20" y="24" width="8" height="3" rx="1"/></svg>`,
-  "inventory": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="6" width="28" height="24" rx="2"/><line x1="4" y1="14" x2="32" y2="14"/><line x1="4" y1="22" x2="32" y2="22"/><line x1="18" y1="6" x2="18" y2="30"/></svg>`,
-  "analytics": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polyline points="4,28 12,18 18,22 24,10 32,14"/><line x1="4" y1="32" x2="32" y2="32"/><line x1="4" y1="4" x2="4" y2="32"/></svg>`,
-  "multi-vault": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="10" width="14" height="12" rx="2"/><rect x="20" y="10" width="14" height="12" rx="2"/><circle cx="9" cy="16" r="3"/><circle cx="27" cy="16" r="3"/><line x1="16" y1="16" x2="20" y2="16"/></svg>`,
-  "insurance": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M18 4L6 10v8c0 7.7 5.1 14.9 12 18 6.9-3.1 12-10.3 12-18V10L18 4z"/><line x1="18" y1="14" x2="18" y2="22"/><line x1="14" y1="18" x2="22" y2="18"/></svg>`,
-  "permissionless-custody": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><circle cx="18" cy="18" r="7"/><path d="M18 4v7M18 25v7M4 18h7M25 18h7"/><circle cx="18" cy="18" r="2"/></svg>`,
-  "whale-services": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="18,4 22,14 34,14 24,22 28,34 18,26 8,34 12,22 2,14 14,14"/><circle cx="18" cy="17" r="4"/></svg>`,
-  "edition-campaign": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="6,4 30,4 34,18 30,32 6,32 2,18"/><circle cx="18" cy="18" r="6"/><line x1="18" y1="12" x2="18" y2="24"/><line x1="12" y1="18" x2="24" y2="18"/></svg>`,
-  "kol-wave-1": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="14" r="6"/><path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10"/><polyline points="24,8 28,4 32,8"/><line x1="28" y1="4" x2="28" y2="14"/></svg>`,
-  "community-channels": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M4 24V12a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-6 4z"/><path d="M24 14h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2v4l-6-4h-4"/></svg>`,
-  "flash-sell": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="20,4 8,20 16,20 14,32 28,14 20,14"/></svg>`,
-  "kol-wave-2": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><circle cx="24" cy="12" r="5"/><path d="M4 28c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M16 28c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`,
-  "content-engine": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="6" width="24" height="24" rx="2"/><polygon points="15,13 15,23 24,18"/></svg>`,
-  "guild-partnerships": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="10" r="5"/><circle cx="8" cy="26" r="5"/><circle cx="28" cy="26" r="5"/><line x1="14" y1="14" x2="10" y2="22"/><line x1="22" y1="14" x2="26" y2="22"/><line x1="13" y1="26" x2="23" y2="26"/></svg>`,
-  "apac-hub": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><ellipse cx="18" cy="18" rx="6" ry="13"/><line x1="5" y1="12" x2="31" y2="12"/><line x1="5" y1="24" x2="31" y2="24"/></svg>`,
-  "global-kol": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><ellipse cx="18" cy="18" rx="6" ry="13"/><line x1="5" y1="18" x2="31" y2="18"/><polyline points="26,6 30,4 32,8"/></svg>`,
-  "token-launch": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M18 4L8 32h20L18 4z"/><line x1="18" y1="14" x2="18" y2="24"/><circle cx="18" cy="26" r="1.5"/></svg>`,
-  "staking": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="8" y="4" width="20" height="6" rx="2"/><rect x="8" y="13" width="20" height="6" rx="2"/><rect x="8" y="22" width="20" height="6" rx="2"/><line x1="18" y1="10" x2="18" y2="13"/><line x1="18" y1="19" x2="18" y2="22"/></svg>`,
-  "liquidity-pools": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><circle cx="22" cy="22" r="8"/></svg>`,
-  "institutional-lending": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><path d="M4 14l14-10 14 10"/><rect x="6" y="14" width="24" height="4"/><line x1="10" y1="18" x2="10" y2="28"/><line x1="18" y1="18" x2="18" y2="28"/><line x1="26" y1="18" x2="26" y2="28"/><rect x="4" y="28" width="28" height="4" rx="1"/></svg>`,
-  "dao-treasury": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="18,2 34,10 34,26 18,34 2,26 2,10"/><circle cx="18" cy="18" r="6"/><path d="M18 14v8M15 18h6"/></svg>`,
-  "decentralization": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><circle cx="18" cy="6" r="4"/><circle cx="6" cy="30" r="4"/><circle cx="30" cy="30" r="4"/><circle cx="18" cy="18" r="3"/><line x1="18" y1="10" x2="18" y2="15"/><line x1="15" y1="20" x2="9" y2="27"/><line x1="21" y1="20" x2="27" y2="27"/></svg>`,
-  "multi-category": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="12" height="12" rx="2"/><circle cx="26" cy="10" r="6"/><polygon points="10,22 16,32 4,32"/><rect x="20" y="22" width="12" height="10" rx="2"/></svg>`,
-  "sports-luxury": `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="18,2 22,12 34,14 26,22 28,34 18,28 8,34 10,22 2,14 14,12"/></svg>`,
+function gp(n){const m={'Shipped':5,'Done':5,'In Progress':3,'Not Started':0,'Locked':0};return{c:m[n.status]||0,m:5}}
+function gpp(n){const p=gp(n);return(p.c/p.m)*100}
+
+// ═══ LAYOUT ENGINE ═══
+// Branch column positions (0-1 range, mapped to tree width)
+const BX={
+  "Design & Brand":.12,
+  "GTM & Marketing":.28,
+  "Core Product":.48,
+  "Operations":.68,
+  "Token & DeFi":.82,
+  "Multi-Category":.92
 };
-const defaultIcon = `<svg viewBox="0 0 36 36" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"><polygon points="18,4 32,12 32,24 18,32 4,24 4,12"/><circle cx="18" cy="18" r="5"/></svg>`;
-function getIcon(id) { return nodeIcons[id] || defaultIcon; }
 
-// Hex points
-function hexPath(cx, cy, r) {
-  const pts = [];
-  for (let i = 0; i < 6; i++) { const a = (Math.PI/3)*i - Math.PI/2; pts.push(`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`); }
-  return pts.join(' ');
-}
-
-function getProgress(n) { const m={'Shipped':5,'Done':5,'In Progress':3,'Not Started':0,'Locked':0}; return {cur:m[n.status]||0,max:5}; }
-function getProgressPct(n) { const p=getProgress(n); return (p.cur/p.max)*100; }
-
-// ===== LAYOUT =====
-function computeLayout(nodes) {
-  const map = {}; nodes.forEach(n => map[n.id] = n);
-  const depths = {};
-  function getDepth(id, vis = new Set()) {
-    if (depths[id] !== undefined) return depths[id];
-    if (vis.has(id)) return 0; vis.add(id);
-    const n = map[id];
-    if (!n || !n.depends || !n.depends.length) { depths[id] = 0; return 0; }
-    let mx = 0;
-    n.depends.forEach(d => { if (map[d]) mx = Math.max(mx, getDepth(d, new Set(vis)) + 1); });
-    depths[id] = mx; return mx;
+function computeLayout(nodes){
+  const map={};nodes.forEach(n=>map[n.id]=n);
+  // Compute depth
+  const dep={};
+  function gd(id,v=new Set()){
+    if(dep[id]!==undefined)return dep[id];if(v.has(id))return 0;v.add(id);
+    const n=map[id];if(!n||!n.depends||!n.depends.length){dep[id]=0;return 0}
+    let mx=0;n.depends.forEach(d=>{if(map[d])mx=Math.max(mx,gd(d,new Set(v))+1)});
+    dep[id]=mx;return mx;
   }
-  nodes.forEach(n => getDepth(n.id));
+  nodes.forEach(n=>gd(n.id));
 
-  const layers = {};
-  nodes.forEach(n => { const d = depths[n.id]||0; if (!layers[d]) layers[d]=[]; layers[d].push(n); });
+  const maxD=Math.max(...Object.values(dep),0);
 
-  const branchOrder = ["Design & Brand","Core Product","Operations","GTM & Marketing","Token & DeFi","Multi-Category"];
-  Object.values(layers).forEach(l => l.sort((a,b) => branchOrder.indexOf(a.branch) - branchOrder.indexOf(b.branch)));
-
-  const nodeW = 130; const layerH = 150; const pad = { x: 80, y: 60 };
-  const positions = {};
-
-  Object.keys(layers).sort((a,b) => a-b).forEach(depth => {
-    const layer = layers[depth];
-    const layerWidth = Math.max(layer.length * nodeW, 500);
-    layer.forEach((n, i) => {
-      positions[n.id] = {
-        x: pad.x + (layerWidth / (layer.length + 1)) * (i + 1),
-        y: pad.y + depth * layerH
-      };
-    });
+  // Group by depth+branch for sub-positioning
+  const layerBranch={};
+  nodes.forEach(n=>{
+    const d=dep[n.id]||0;const k=d+'|'+n.branch;
+    if(!layerBranch[k])layerBranch[k]=[];
+    layerBranch[k].push(n);
   });
 
-  const allX = Object.values(positions).map(p => p.x);
-  const allY = Object.values(positions).map(p => p.y);
-  return { positions, w: Math.max(...allX) + 160, h: Math.max(...allY) + 180 };
+  const pos={};
+  const W=Math.max(nodes.length*28,1400);
+  const layerH=130;
+  const H=(maxD+1)*layerH+120;
+
+  nodes.forEach(n=>{
+    const d=dep[n.id]||0;
+    const k=d+'|'+n.branch;
+    const group=layerBranch[k];
+    const idx=group.indexOf(n);
+    const baseX=BX[n.branch]||.5;
+    // Spread siblings within branch column
+    const spread=group.length>1?(idx-(group.length-1)/2)*70:0;
+    // Y: inverted (root at bottom)
+    pos[n.id]={
+      x:60+baseX*(W-120)+spread,
+      y:H-60-d*layerH
+    };
+  });
+
+  return{pos,W,H,maxD};
 }
 
-// ===== RENDER =====
-function renderTree() {
-  if (!nodes.length) return;
-  const { positions, w, h } = computeLayout(nodes);
-  const vp = document.getElementById('treeViewport');
-  const svg = document.getElementById('treeSvg');
-  vp.style.width = w+'px'; vp.style.height = h+'px';
-  svg.setAttribute('width', w); svg.setAttribute('height', h);
+// ═══ RENDER ═══
+function renderTree(){
+  if(!nodes.length)return;
+  const{pos,W,H,maxD}=computeLayout(nodes);
+  const vp=document.getElementById('tv'),svg=document.getElementById('tsvg');
+  vp.style.width=W+'px';vp.style.height=H+'px';
+  svg.setAttribute('width',W);svg.setAttribute('height',H);
 
-  // Connections
-  let svgH = `<defs>
-    <marker id="aD" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L6,3 L0,6" fill="var(--green)" opacity="0.5"/></marker>
-    <marker id="aA" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L6,3 L0,6" fill="var(--cyan)" opacity="0.7"/></marker>
-  </defs>`;
+  // Build connection paths
+  let sh=`<defs>`;
+  // Glow filters per branch
+  Object.entries(BC).forEach(([b,c])=>{
+    const id='g_'+b.replace(/[^a-z]/gi,'');
+    sh+=`<filter id="${id}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="3"/></filter>`;
+  });
+  sh+=`</defs>`;
 
-  nodes.forEach(n => {
-    if (!n.depends || !positions[n.id]) return;
-    n.depends.forEach(depId => {
-      if (!positions[depId]) return;
-      const f = positions[depId], t = positions[n.id];
-      const dep = nodeMap[depId];
-      const depDone = dep && (dep.status==='Done'||dep.status==='Shipped');
-      const active = n.status==='In Progress';
-      const crit = n.priority==='Critical Path' && active;
-      let cls='locked', mk='';
-      if (depDone && active) { cls='active'; mk='url(#aA)'; }
-      else if (depDone) { cls='done'; mk='url(#aD)'; }
-      else if (n.status==='Not Started'||active) cls='ready';
-      if (crit) cls='critical';
-      const my = (f.y+t.y)/2;
-      svgH += `<path class="conn ${cls}" d="M${f.x},${f.y+44} C${f.x},${my} ${t.x},${my} ${t.x},${t.y-10}" ${mk?`marker-end="${mk}"`:''}/>`;
+  // Draw connections — thick glowing colored paths
+  nodes.forEach(n=>{
+    if(!n.depends||!pos[n.id])return;
+    n.depends.forEach(did=>{
+      if(!pos[did])return;
+      const f=pos[did],t=pos[n.id];
+      const dn=NM[did];
+      const dd=dn&&(dn.status==='Done'||dn.status==='Shipped');
+      const act=n.status==='In Progress';
+      const col=BC[n.branch]||'#444';
+      const fId='g_'+n.branch.replace(/[^a-z]/gi,'');
+
+      let cls='locked',sw=3,stroke='#14151e',opacity=.4,filt='';
+      if(dd&&act){cls='active';sw=4.5;stroke=col;opacity=.85;filt=`filter="url(#${fId})"`;
+      }else if(dd){cls='done';sw=3.5;stroke=col;opacity=.45;
+      }else if(n.status!=='Locked'){cls='ready';sw=3;stroke='#222338';opacity=.5}
+
+      const dx=t.x-f.x,dy=t.y-f.y;
+      const cp1x=f.x,cp1y=f.y+dy*.4;
+      const cp2x=t.x,cp2y=t.y-dy*.4;
+      const d=`M${f.x},${f.y} C${cp1x},${cp1y} ${cp2x},${cp2y} ${t.x},${t.y}`;
+
+      // Glow layer (behind)
+      if(cls==='active'||cls==='done'){
+        sh+=`<path d="${d}" fill="none" stroke="${stroke}" stroke-width="${sw+3}" opacity="${opacity*.3}" stroke-linecap="round" ${filt}/>`;
+      }
+      // Main line
+      sh+=`<path d="${d}" fill="none" stroke="${stroke}" stroke-width="${sw}" opacity="${opacity}" stroke-linecap="round" ${cls==='locked'?'stroke-dasharray="5 4"':''}/>`;
     });
   });
-  svg.innerHTML = svgH;
+  svg.innerHTML=sh;
+
+  // Remove old nodes
+  vp.querySelectorAll('.nd,.branch-label').forEach(e=>e.remove());
+
+  // Branch labels
+  const placed={};
+  nodes.forEach(n=>{
+    if(!pos[n.id])return;
+    const bk=n.branch;
+    if(!placed[bk]&&n.depends&&n.depends.length===0){
+      placed[bk]=true;
+      const p=pos[n.id];
+      const c=BC[bk]||'#888';
+      vp.insertAdjacentHTML('beforeend',
+        `<div class="branch-label" style="left:${p.x}px;top:${p.y+60}px;color:${c};transform:translateX(-50%)">${bk.toUpperCase()}</div>`
+      );
+    }
+  });
 
   // Nodes
-  vp.querySelectorAll('.tree-node').forEach(e => e.remove());
-  let nh = '';
-  nodes.forEach(n => {
-    if (!positions[n.id]) return;
-    const p = positions[n.id], c = branchColors[n.branch]||'#888';
-    const prog = getProgress(n), pct = getProgressPct(n);
-    nh += `<div class="tree-node" data-status="${n.status}" data-id="${n.id}" style="left:${p.x-56}px;top:${p.y-44}px;width:112px;" onclick="openDetail(nodeMap['${n.id}'])">
-      <div class="hex-frame">
-        <svg class="hex-bg" viewBox="0 0 88 88" width="88" height="88"><polygon points="${hexPath(44,44,40)}"/></svg>
-        <div class="branch-dot" style="background:${c}"></div>
-        <div class="hex-icon">${getIcon(n.id)}</div>
+  let nh='';
+  nodes.forEach(n=>{
+    if(!pos[n.id])return;
+    const p=pos[n.id],c=BC[n.branch]||'#888',g=BG[n.branch]||'rgba(100,100,100,.3)';
+    const pr=gp(n),pct=gpp(n);
+    const isDiamond=n.priority==='Critical Path'&&(n.status==='In Progress'||n.status==='Done'||n.status==='Shipped');
+    const isActive=n.status==='In Progress';
+    const isDone=n.status==='Done'||n.status==='Shipped';
+    const ringCol=isDone?c:isActive?c:n.status==='Not Started'?'#2a2c42':'#1a1b24';
+    const fillCol=isDone?c:isActive?c:'transparent';
+    const badgeText=pr.c>=pr.m?'MAX':`${pr.c}/${pr.m}`;
+    const badgeStyle=pr.c>=pr.m?`background:${c};color:#000;border-color:${c}`:'';
+
+    nh+=`<div class="nd ${isDiamond?'diamond':''}" data-status="${n.status}" data-id="${n.id}" style="left:${p.x-48}px;top:${p.y-48}px;width:96px;--node-glow:${g}" onclick="openDetail(NM['${n.id}'])">
+      <div class="md">
+        <svg class="ring" viewBox="0 0 72 72">
+          <circle class="ring-bg" cx="36" cy="36" r="28" fill="${fillCol}" fill-opacity="0"/>
+          <circle class="ring-outer" cx="36" cy="36" r="30" stroke="${ringCol}" stroke-width="${isActive||isDone?2.5:2}"/>
+          <circle class="ring-inner" cx="36" cy="36" r="26" stroke="${isActive||isDone?ringCol:'transparent'}" stroke-width="1" opacity=".5"/>
+          <circle cx="36" cy="36" r="23" fill="none" stroke="${isActive||isDone?ringCol:'transparent'}" stroke-width=".5" opacity=".3" stroke-dasharray="2 3"/>
+        </svg>
+        <div class="ico">${gi(n.id)}</div>
+        <div class="nd-badge" style="${badgeStyle}">${badgeText}</div>
       </div>
-      <div class="hex-label">${n.name}</div>
-      <div class="hex-progress">
-        <div class="hex-pbar"><div class="hex-pfill" style="width:${pct}%;background:${c}"></div></div>
-        <div class="hex-plabel">${prog.cur}/${prog.max}</div>
-      </div>
+      <div class="nd-name">${n.name}</div>
     </div>`;
   });
-  vp.insertAdjacentHTML('beforeend', nh);
+  vp.insertAdjacentHTML('beforeend',nh);
+
+  // Scroll to bottom (roots)
+  const ta=document.getElementById('ta');
+  ta.scrollTop=ta.scrollHeight;
 }
 
-// ===== QUESTS =====
-function renderQuests() {
-  const list = document.getElementById('questList');
-  const seed = new Date(); const ds = seed.getFullYear()*10000+(seed.getMonth()+1)*100+seed.getDate();
-  const ps = {'Critical Path':100,'High':75,'Medium':50,'Low':25};
-  const cands = nodes.filter(n => {
-    if (n.status==='In Progress') return true;
-    if (n.status==='Not Started') return !n.depends||!n.depends.length||n.depends.every(d=>{const dep=nodeMap[d];return dep&&(dep.status==='Done'||dep.status==='Shipped');});
+// ═══ QUESTS ═══
+function renderQuests(){
+  const list=document.getElementById('ql');
+  const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  const ps={'Critical Path':100,'High':75,'Medium':50,'Low':25};
+  const cands=nodes.filter(n=>{
+    if(n.status==='In Progress')return true;
+    if(n.status==='Not Started')return!n.depends||!n.depends.length||n.depends.every(d=>{const x=NM[d];return x&&(x.status==='Done'||x.status==='Shipped')});
     return false;
   });
-  const scored = cands.map((n,i) => {
-    let s = ps[n.priority]||50;
-    if (n.status==='In Progress') s+=50;
-    s += (n.unlocks?.length||0)*12;
-    s += ((ds*(i+1)*7)%15);
-    return {node:n,score:s};
-  }).sort((a,b) => b.score-a.score).slice(0,3);
+  const scored=cands.map((n,i)=>{let s=ps[n.priority]||50;if(n.status==='In Progress')s+=50;s+=(n.unlocks?.length||0)*12;s+=((seed*(i+1)*7)%15);return{n,s}}).sort((a,b)=>b.s-a.s).slice(0,3);
 
-  if (!scored.length) { list.innerHTML='<div style="color:var(--text-dim);font-size:10px;padding:8px 0">No actionable quests.</div>'; return; }
-  const labels = ['Primary Focus','Secondary','Bonus Quest'];
-  list.innerHTML = scored.map((item,i) => {
-    const n=item.node, prog=getProgress(n), c=branchColors[n.branch]||'#888';
-    const reason = n.status==='In Progress'?'In progress — keep pushing':'Ready — all deps cleared';
-    return `<div class="quest-card q${i}" onclick="openDetail(nodeMap['${n.id}'])">
-      <div class="quest-rank">${labels[i]}</div>
-      <div class="quest-name">${n.name}</div>
-      <div class="quest-reason">${reason}</div>
-      <div class="quest-bar-wrap"><div class="quest-bar"><div class="quest-bar-fill" style="width:${getProgressPct(n)}%;background:${c}"></div></div><span class="quest-bar-label">${prog.cur}/${prog.max}</span></div>
-      <div class="quest-tags"><span class="quest-tag" style="color:${c}">${n.branch}</span><span class="quest-tag">${n.priority}</span>${n.unlocks?.length?`<span class="quest-tag" style="color:var(--green)">Unlocks ${n.unlocks.length}</span>`:''}</div>
-    </div>`;
-  }).join('');
+  if(!scored.length){list.innerHTML='<div style="color:var(--text-dim);font-size:9px;padding:6px 0">No actionable quests.</div>';return}
+  const lb=['Primary Focus','Secondary','Bonus Quest'];
+  list.innerHTML=scored.map((it,i)=>{
+    const n=it.n,pr=gp(n),c=BC[n.branch]||'#888';
+    return`<div class="qc q${i}" onclick="openDetail(NM['${n.id}'])">
+      <div class="qr">${lb[i]}</div><div class="qn">${n.name}</div>
+      <div class="qre">${n.status==='In Progress'?'In progress — keep pushing':'Ready — deps cleared'}</div>
+      <div class="qbw"><div class="qb"><div class="qbf" style="width:${gpp(n)}%;background:${c}"></div></div><span class="qbl">${pr.c}/${pr.m}</span></div>
+      <div class="qt"><span class="qtg" style="color:${c}">${n.branch}</span><span class="qtg">${n.priority}</span>${n.unlocks?.length?`<span class="qtg" style="color:var(--green)">Unlocks ${n.unlocks.length}</span>`:''}</div>
+    </div>`}).join('');
 }
 
-function updateStats(s) {
-  if (!s) return;
-  document.getElementById('statNodes').textContent=s.total;
-  document.getElementById('statActive').textContent=s.active;
-  document.getElementById('statDone').textContent=s.done;
-  document.getElementById('statPct').textContent=s.progress;
-  document.getElementById('progressFill').style.width=Math.max(s.progress,2)+'%';
+function updateStats(s){if(!s)return;document.getElementById('sN').textContent=s.total;document.getElementById('sA').textContent=s.active;document.getElementById('sD').textContent=s.done;document.getElementById('sP').textContent=s.progress;document.getElementById('pf').style.width=Math.max(s.progress,2)+'%'}
+
+async function fetchNodes(){
+  const dot=document.getElementById('sd'),txt=document.getElementById('st');
+  dot.classList.add('syncing');txt.textContent='Syncing...';
+  try{
+    const r=await fetch(API),d=await r.json();if(!d.ok)throw new Error(d.error);
+    nodes=d.nodes;NM={};nodes.forEach(n=>NM[n.id]=n);
+    renderTree();renderQuests();updateStats(d.stats);
+    dot.classList.remove('syncing','error');txt.textContent=`Synced ${new Date(d.lastSync).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+    document.getElementById('ld').classList.add('hidden');
+    if(sel){const u=NM[sel.id];if(u)openDetail(u)}
+  }catch(e){console.error(e);dot.classList.remove('syncing');dot.classList.add('error');txt.textContent='Error';document.getElementById('ld').classList.add('hidden')}
 }
 
-async function fetchNodes() {
-  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
-  dot.classList.add('syncing'); txt.textContent='Syncing...';
-  try {
-    const res=await fetch(API_URL), data=await res.json();
-    if (!data.ok) throw new Error(data.error);
-    nodes=data.nodes; nodeMap={}; nodes.forEach(n=>nodeMap[n.id]=n);
-    renderTree(); renderQuests(); updateStats(data.stats);
-    dot.classList.remove('syncing','error');
-    txt.textContent=`Synced ${new Date(data.lastSync).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    if (selectedNode) { const u=nodeMap[selectedNode.id]; if(u) openDetail(u); }
-  } catch(e) {
-    console.error('Sync failed:',e);
-    dot.classList.remove('syncing'); dot.classList.add('error'); txt.textContent='Error';
-    document.getElementById('loadingOverlay').classList.add('hidden');
-  }
-}
-
-function buildProgressChecklist(node) {
-  // Build detailed progress items from deps + milestones
-  const items = [];
-
-  // 1) Dependency items
-  if (node.depends && node.depends.length > 0) {
-    node.depends.forEach(depId => {
-      const dep = nodeMap[depId];
-      if (!dep) return;
-      const isDone = dep.status === 'Done' || dep.status === 'Shipped';
-      const isActive = dep.status === 'In Progress';
-      items.push({
-        text: dep.name,
-        status: isDone ? 'done' : isActive ? 'active' : 'pending',
-        group: 'dependencies',
-        clickId: depId
-      });
+// ═══ DETAIL MODAL ═══
+function buildChecklist(node){
+  const items=[];
+  if(node.depends&&node.depends.length){
+    node.depends.forEach(did=>{
+      const dep=NM[did];if(!dep)return;
+      const dd=dep.status==='Done'||dep.status==='Shipped';
+      items.push({text:dep.name,st:dd?'done':dep.status==='In Progress'?'active':'pending',grp:'dep',cid:did});
     });
   }
-
-  // 2) Task milestone items (derived from status)
-  const milestones = [
-    { text: 'Task initiated', done: node.status !== 'Locked' && node.status !== 'Not Started' },
-    { text: 'Development in progress', done: node.status === 'In Progress' || node.status === 'Done' || node.status === 'Shipped' },
-    { text: 'Review & testing', done: node.status === 'Done' || node.status === 'Shipped' },
-    { text: 'Completed & deployed', done: node.status === 'Done' || node.status === 'Shipped' },
-    { text: 'Shipped to production', done: node.status === 'Shipped' },
-  ];
-  milestones.forEach(m => {
-    items.push({
-      text: m.text,
-      status: m.done ? 'done' : (node.status === 'In Progress' && m.text === 'Development in progress') ? 'active' : 'pending',
-      group: 'milestones'
-    });
-  });
-
+  [{t:'Task initiated',d:node.status!=='Locked'&&node.status!=='Not Started'},
+   {t:'Development in progress',d:node.status==='In Progress'||node.status==='Done'||node.status==='Shipped'},
+   {t:'Review & testing',d:node.status==='Done'||node.status==='Shipped'},
+   {t:'Completed & deployed',d:node.status==='Done'||node.status==='Shipped'},
+   {t:'Shipped to production',d:node.status==='Shipped'}
+  ].forEach(m=>items.push({text:m.t,st:m.d?'done':(node.status==='In Progress'&&m.t==='Development in progress')?'active':'pending',grp:'ms'}));
   return items;
 }
 
-function getDetailedProgress(node) {
-  const items = buildProgressChecklist(node);
-  const doneCount = items.filter(i => i.status === 'done').length;
-  const activeCount = items.filter(i => i.status === 'active').length;
-  const total = items.length;
-  const pct = total > 0 ? Math.round(((doneCount + activeCount * 0.5) / total) * 100) : 0;
-  return { items, doneCount, activeCount, pendingCount: total - doneCount - activeCount, total, pct };
-}
+function openDetail(node){
+  if(!node)return;sel=node;
+  const panel=document.getElementById('dp'),overlay=document.getElementById('dov'),content=document.getElementById('dpc');
+  const c=BC[node.branch]||'#888';
+  const items=buildChecklist(node);
+  const dc=items.filter(i=>i.st==='done').length,ac=items.filter(i=>i.st==='active').length,pc=items.length-dc-ac;
+  const pct=items.length?Math.round(((dc+ac*.5)/items.length)*100):0;
+  const pcol=(node.status==='Done'||node.status==='Shipped')?'var(--green)':node.status==='In Progress'?c:'var(--text-dim)';
 
-function openDetail(node) {
-  if (!node) return; selectedNode=node;
-  const panel=document.getElementById('detailPanel'), overlay=document.getElementById('detailOverlay'), content=document.getElementById('detailContent');
-  const c=branchColors[node.branch]||'#888';
-  const dp = getDetailedProgress(node);
-  const pc = (node.status==='Done'||node.status==='Shipped')?'var(--green)':node.status==='In Progress'?'var(--cyan)':'var(--text-dim)';
+  const depI=items.filter(i=>i.grp==='dep'),msI=items.filter(i=>i.grp==='ms');
+  const uH=(node.unlocks||[]).length>0?node.unlocks.map(u=>{const un=NM[u];return un?`<div class="d-unl" onclick="event.stopPropagation();openDetail(NM['${u}'])">${un.name}</div>`:''}).join(''):'<span style="color:var(--text-dim);font-size:9px">End node</span>';
+  const bH=node.blockers?`<div class="d-sec"><div class="d-sec-t">Blockers</div><div class="d-blk">${node.blockers}</div></div>`:'';
 
-  const uH = (node.unlocks||[]).length>0 ? node.unlocks.map(u=>{const un=nodeMap[u];return un?`<div class="detail-unlock-item" onclick="event.stopPropagation();openDetail(nodeMap['${u}'])">${un.name}</div>`:''}).join('') : '<span style="color:var(--text-dim);font-size:10px">End node</span>';
-  const bH = node.blockers?`<div class="detail-section"><div class="detail-section-title">Blockers</div><div class="blocker-badge">${node.blockers}</div></div>`:'';
-
-  // Build checklist HTML grouped
-  const depItems = dp.items.filter(i => i.group === 'dependencies');
-  const msItems = dp.items.filter(i => i.group === 'milestones');
-
-  let checklistHtml = '';
-  if (depItems.length > 0) {
-    checklistHtml += `<div class="checklist-group-title">Dependencies (${depItems.filter(i=>i.status==='done').length}/${depItems.length})</div>`;
-    checklistHtml += depItems.map(i => `
-      <div class="checklist-item ${i.status==='done'?'done':''} ${i.clickId?'checklist-clickable':''}" ${i.clickId?`onclick="event.stopPropagation();openDetail(nodeMap['${i.clickId}'])"`:''}>
-        <div class="checklist-icon ${i.status}">${i.status==='done'?'\u2713':i.status==='active'?'\u25B6':'\u25CB'}</div>
-        <span class="checklist-text">${i.text}</span>
-        <span class="checklist-status ${i.status}">${i.status==='done'?'Done':i.status==='active'?'Active':'Pending'}</span>
-      </div>`).join('');
+  let clH='';
+  if(depI.length){
+    clH+=`<div class="cl-gt">Dependencies (${depI.filter(i=>i.st==='done').length}/${depI.length})</div>`;
+    clH+=depI.map(i=>`<div class="cl-i ${i.st==='done'?'done':''} ${i.cid?'cl-click':''}" ${i.cid?`onclick="event.stopPropagation();openDetail(NM['${i.cid}'])"`:''}>
+      <div class="cl-ic ${i.st}">${i.st==='done'?'\u2713':i.st==='active'?'\u25B6':'\u25CB'}</div>
+      <span class="cl-t">${i.text}</span>
+      <span class="cl-s ${i.st}">${i.st==='done'?'Done':i.st==='active'?'Active':'Pending'}</span></div>`).join('');
   }
+  clH+=`<div class="cl-gt">Milestones (${msI.filter(i=>i.st==='done').length}/${msI.length})</div>`;
+  clH+=msI.map(i=>`<div class="cl-i ${i.st==='done'?'done':''}">
+    <div class="cl-ic ${i.st}">${i.st==='done'?'\u2713':i.st==='active'?'\u25B6':'\u25CB'}</div>
+    <span class="cl-t">${i.text}</span>
+    <span class="cl-s ${i.st}">${i.st==='done'?'Done':i.st==='active'?'In Progress':'Pending'}</span></div>`).join('');
 
-  checklistHtml += `<div class="checklist-group-title">Milestones (${msItems.filter(i=>i.status==='done').length}/${msItems.length})</div>`;
-  checklistHtml += msItems.map(i => `
-    <div class="checklist-item ${i.status==='done'?'done':''}">
-      <div class="checklist-icon ${i.status}">${i.status==='done'?'\u2713':i.status==='active'?'\u25B6':'\u25CB'}</div>
-      <span class="checklist-text">${i.text}</span>
-      <span class="checklist-status ${i.status}">${i.status==='done'?'Done':i.status==='active'?'In Progress':'Pending'}</span>
-    </div>`).join('');
-
-  content.innerHTML = `
-    <div class="detail-branch" style="background:${c}15;color:${c};border:1px solid ${c}30">${node.branch}</div>
-    <div class="detail-title">${node.name}</div>
-    <div class="detail-phase">Phase ${node.phase} &middot; ${(node.team||[]).join(', ')||'Unassigned'} &middot; ${statusIcons[node.status]||''} ${node.status}</div>
-
-    <div class="detail-progress-section">
-      <div class="detail-progress-header">
-        <span class="detail-progress-label">Overall Progress</span>
-        <span class="detail-progress-value" style="color:${pc}">${dp.pct}%</span>
-      </div>
-      <div class="detail-pbar"><div class="detail-pfill" style="width:${dp.pct}%;background:${pc}"></div></div>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <span style="font-size:9px;color:var(--green)">\u2713 ${dp.doneCount} done</span>
-        <span style="font-size:9px;color:var(--cyan)">\u25B6 ${dp.activeCount} active</span>
-        <span style="font-size:9px;color:var(--text-dim)">\u25CB ${dp.pendingCount} pending</span>
-      </div>
-    </div>
-
-    <div class="detail-columns">
-      <div class="detail-col-left">
-        <div class="detail-section-title">Progress Details</div>
-        <div class="progress-checklist">${checklistHtml}</div>
-      </div>
-      <div class="detail-col-right">
-        <div class="detail-row"><span class="detail-row-label">Priority</span><span class="detail-row-value">${node.priority}</span></div>
-        <div class="detail-row"><span class="detail-row-label">Est. Cost</span><span class="detail-row-value">${node.cost>0?'$'+node.cost.toLocaleString():'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-row-label">Duration</span><span class="detail-row-value">${node.duration||'\u2014'}</span></div>
-        ${bH}
-        <div class="detail-section" style="margin-top:12px"><div class="detail-section-title">Notes</div><div class="detail-section-content">${node.notes||'\u2014'}</div></div>
-        <div class="detail-section"><div class="detail-section-title">Unlocks (${(node.unlocks||[]).length})</div>${uH}</div>
-      </div>
-    </div>`;
-  panel.classList.add('open'); overlay.classList.add('open');
+  content.innerHTML=`
+    <div class="d-branch" style="background:${c}15;color:${c};border:1px solid ${c}30">${node.branch}</div>
+    <div class="d-title">${node.name}</div>
+    <div class="d-phase">Phase ${node.phase} &middot; ${(node.team||[]).join(', ')||'Unassigned'} &middot; ${SI[node.status]||''} ${node.status}</div>
+    <div class="d-prog"><div class="d-prog-h"><span class="d-prog-l">Overall Progress</span><span class="d-prog-v" style="color:${pcol}">${pct}%</span></div>
+    <div class="d-pbar"><div class="d-pfill" style="width:${pct}%;background:${pcol}"></div></div>
+    <div style="display:flex;gap:10px;margin-top:6px"><span style="font-size:8px;color:var(--green)">\u2713 ${dc} done</span><span style="font-size:8px;color:${c}">\u25B6 ${ac} active</span><span style="font-size:8px;color:var(--text-dim)">\u25CB ${pc} pending</span></div></div>
+    <div class="d-cols"><div class="d-col"><div class="d-sec-t">Progress Details</div>${clH}</div>
+    <div class="d-col">
+      <div class="d-row"><span class="d-row-l">Priority</span><span class="d-row-v">${node.priority}</span></div>
+      <div class="d-row"><span class="d-row-l">Est. Cost</span><span class="d-row-v">${node.cost>0?'$'+node.cost.toLocaleString():'N/A'}</span></div>
+      <div class="d-row"><span class="d-row-l">Duration</span><span class="d-row-v">${node.duration||'\u2014'}</span></div>
+      ${bH}
+      <div class="d-sec" style="margin-top:10px"><div class="d-sec-t">Notes</div><div class="d-sec-c">${node.notes||'\u2014'}</div></div>
+      <div class="d-sec"><div class="d-sec-t">Unlocks (${(node.unlocks||[]).length})</div>${uH}</div>
+    </div></div>`;
+  panel.classList.add('open');overlay.classList.add('open');
 }
 
-function closeDetail() {
-  document.getElementById('detailPanel').classList.remove('open');
-  document.getElementById('detailOverlay').classList.remove('open');
-  selectedNode=null;
-}
-
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeDetail(); if(e.key==='r'&&!e.target.matches('input')) fetchNodes(); });
-fetchNodes();
-setInterval(fetchNodes, AUTO_REFRESH_MS);
+function closeDetail(){document.getElementById('dp').classList.remove('open');document.getElementById('dov').classList.remove('open');sel=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail();if(e.key==='r'&&!e.target.matches('input'))fetchNodes()});
+fetchNodes();setInterval(fetchNodes,REFRESH);
 </script>
 </body>
 </html>
